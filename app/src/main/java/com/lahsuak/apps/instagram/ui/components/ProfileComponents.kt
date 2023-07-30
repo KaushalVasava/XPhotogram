@@ -1,10 +1,7 @@
 package com.lahsuak.apps.instagram.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.animation.core.TwoWayConverter
-import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.Post
 import com.lahsuak.apps.instagram.models.Story
@@ -80,7 +77,7 @@ fun MiddlePart(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             CircularImage(
-                imageIcon = painterResource(id = user.profileImage),
+                imageUrl = user.profileImage,
                 imageSize = 80.dp
             )
             StateInfo(modifier = Modifier.weight(7f), user, navController)
@@ -290,18 +287,23 @@ fun ActionButton(
 fun HighlightSection(
     modifier: Modifier = Modifier,
     highlights: List<Story>,
+    navController: NavController,
 ) {
     LazyRow(modifier = modifier) {
         items(highlights) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .clickable {
+                        navController.navigate("${NavigationItem.ViewStory.route}/${it.id}")
+                    }
             ) {
                 CircularImage(
-                    imageIcon = painterResource(id = it.image),
+                    imageUrl = it.image,
                     imageSize = 65.dp,
-                    contentScale = ContentScale.Inside
+                    contentScale = ContentScale.Crop
                 )
                 Text(
                     text = it.name ?: "",
@@ -370,8 +372,8 @@ fun PostSection(
             .scale(1.01f)
     ) {
         items(posts) {
-            Image(
-                painter = painterResource(id = it.postImage),
+            AsyncImage(
+                it.postImage,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

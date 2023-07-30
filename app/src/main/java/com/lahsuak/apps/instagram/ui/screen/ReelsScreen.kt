@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.instagram.R
@@ -97,7 +98,7 @@ fun ReelsScreen(homeViewModel: HomeViewModel, navController: NavController) {
                     modifier = Modifier.padding(start = 16.dp)
                 ) {
                     CircularImage(
-                        imageIcon = painterResource(id = R.drawable.mypic),
+                        imageUrl = "https://cdn.pixabay.com/photo/2023/04/23/09/40/bird-7945398_1280.jpg",
                         imageSize = 50.dp,
                         modifier = Modifier.clickable {
                             navController.navigate(
@@ -218,7 +219,9 @@ fun ReelsPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            ReelsScreen(homeViewModel = HomeViewModel(), rememberNavController())
+            val homeViewModel: HomeViewModel = viewModel()
+
+            ReelsScreen(homeViewModel = homeViewModel, rememberNavController())
         }
     }
 }

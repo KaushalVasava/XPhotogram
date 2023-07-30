@@ -19,23 +19,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
@@ -43,8 +39,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -52,7 +48,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -60,8 +55,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.Story
 import com.lahsuak.apps.instagram.models.User
@@ -77,7 +72,7 @@ fun ViewStory(
     homeViewModel: HomeViewModel,
     navController: NavController,
 ) {
-    val story = homeViewModel.stories.find {
+    val story = homeViewModel.stories.collectAsState().value.find {
         it.id == storyId
     }
     if (story != null) {
@@ -110,8 +105,8 @@ fun StoryItem(
         mutableStateOf(true)
     }
     Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painterResource(id = story.image),
+        AsyncImage(
+            story.image,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
@@ -134,7 +129,7 @@ fun StoryItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CircularImage(
-                    imageIcon = painterResource(id = user.profileImage),
+                    imageUrl = user.profileImage,
                     imageSize = 40.dp,
                     modifier = Modifier
                         .padding(vertical = 4.dp, horizontal = 8.dp)
@@ -142,7 +137,11 @@ fun StoryItem(
                             onImageClick()
                         }
                 )
-                Text(user.name, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f))
+                Text(
+                    user.name,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f)
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     imageVector = Icons.Default.Close,
@@ -255,11 +254,15 @@ fun StoryItemPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             StoryItem(
-                Story("12429", AppConstants.MY_USER_ID, image = R.drawable.mypic),
+                Story(
+                    "12429",
+                    AppConstants.MY_USER_ID,
+                    image = "https://cdn.pixabay.com/photo/2023/05/16/13/02/green-lacewing-7997506_1280.jpg"
+                ),
                 User(
                     id = AppConstants.MY_USER_ID,
                     name = "Kaushal",
-                    profileImage = R.drawable.mypic,
+                    profileImage = "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_1280.jpg",
                     bio = "Android developer | Nature Lover",
                     links = listOf("https://github.com//KaushalVasava"),
                     followerIds = listOf("12346", "12347", "12348", "12349"),

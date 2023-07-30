@@ -20,6 +20,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.instagram.models.Notification
@@ -41,6 +44,7 @@ fun NotificationScreen(
     homeViewModel: HomeViewModel,
     navController: NavController,
 ) {
+    val notifications by homeViewModel.notifications.collectAsState()
     Column {
         TopAppBar(title = {
             Text(
@@ -57,7 +61,7 @@ fun NotificationScreen(
         }
         )
         LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
-            items(homeViewModel.notifications) {
+            items(notifications) {
                 NotificationItem(notification = it)
             }
         }
@@ -72,7 +76,7 @@ fun NotificationItem(notification: Notification) {
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CircularImage(imageIcon = painterResource(id = notification.image), imageSize = 45.dp)
+        CircularImage(imageUrl = notification.image, imageSize = 45.dp)
         Spacer(modifier = Modifier.width(8.dp))
         Column(Modifier.fillMaxWidth()) {
             Text(notification.title, fontSize = 14.sp)
@@ -97,8 +101,10 @@ fun NotificationPreview() {
             modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.background
         ) {
+            val homeViewModel: HomeViewModel = viewModel()
+
             NotificationScreen(
-                homeViewModel = HomeViewModel(),
+                homeViewModel = homeViewModel,
                 navController = rememberNavController()
             )
         }

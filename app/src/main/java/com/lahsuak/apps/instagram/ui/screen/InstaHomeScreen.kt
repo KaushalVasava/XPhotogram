@@ -2,11 +2,9 @@ package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
 import android.util.Log
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,11 +17,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,9 +26,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +38,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.instagram.R
@@ -53,6 +49,7 @@ import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
 import com.lahsuak.apps.instagram.ui.theme.LIGHT_BLUE
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
+import kotlinx.coroutines.flow.asStateFlow
 
 private const val TAG = "TAG"
 
@@ -63,13 +60,28 @@ fun InstaHomeScreen(
     homeViewModel: HomeViewModel,
     navController: NavController,
 ) {
-    val user = homeViewModel.getUserById(MY_USER_ID)
+    val users by homeViewModel.users.collectAsState()
+    val user = users.find {
+        it.id == MY_USER_ID
+    }
+//        homeViewModel.getUserById(MY_USER_ID)
 
     if (user != null) {
         val followings = homeViewModel.getUsersByIds(user.followingIds + user.id)
-        val stories =
-            homeViewModel.getStoriesByUserIds(user.followingIds).distinctBy { it.userId }
-        val posts = homeViewModel.getPostsByUserIds(user.followingIds + user.id)
+        val stories by homeViewModel.stories.collectAsState()
+        val posts by homeViewModel.posts.collectAsState()
+
+//        val stories = allStories.filter { story ->
+//            user.followingIds.any {
+//                story.id == it
+//            }
+//        }.distinctBy { it.userId }
+//
+//        val posts = allPosts.filter { story ->
+//            (user.followingIds + user.id).any {
+//                story.id == it
+//            }
+//        }
 
         Column(modifier = modifier) {
             TopAppBar(title = {
@@ -79,13 +91,15 @@ fun InstaHomeScreen(
                     fontWeight = FontWeight.ExtraBold
                 )
             }, actions = {
-                Row{
+                Row {
                     Icon(
                         painterResource(id = R.drawable.ic_favorite_border),
                         contentDescription = null,
-                        Modifier.padding(8.dp).clickable {
-                            navController.navigate(NavigationItem.Notification.route)
-                        }
+                        Modifier
+                            .padding(8.dp)
+                            .clickable {
+                                navController.navigate(NavigationItem.Notification.route)
+                            }
                     )
                     Icon(
                         painterResource(id = R.drawable.ic_chat),
@@ -108,7 +122,7 @@ fun InstaHomeScreen(
                                     Log.d(TAG, "InstaHomeScreen: new story")
                                 }) {
                                 CircularImage(
-                                    imageIcon = painterResource(id = R.drawable.mypic),
+                                    imageUrl = user.profileImage,
                                     isBorderVisible = false,
                                     isNameVisible = true,
                                     name = "Your story",
@@ -141,7 +155,7 @@ fun InstaHomeScreen(
                             }
                             if (usr != null) {
                                 CircularImage(
-                                    imageIcon = painterResource(id = usr.profileImage),
+                                    imageUrl = usr.profileImage,
                                     isBorderVisible = true,
                                     isNameVisible = true,
                                     name = usr.name,
@@ -186,8 +200,10 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.background
         ) {
+            val homeViewModel: HomeViewModel = viewModel()
+
             InstaHomeScreen(
-                homeViewModel = HomeViewModel(),
+                homeViewModel = homeViewModel,
                 navController = rememberNavController()
             )
         }

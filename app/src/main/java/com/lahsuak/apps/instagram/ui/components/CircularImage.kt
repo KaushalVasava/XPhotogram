@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -22,7 +21,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -30,12 +28,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import coil.compose.AsyncImage
 
 @Composable
 fun CircularImage(
     modifier: Modifier = Modifier,
-    imageIcon: Painter,
+    imageUrl: String,
     imageSize: Dp = 75.dp,
     isBorderVisible: Boolean = false,
     isNameVisible: Boolean = false,
@@ -78,8 +76,8 @@ fun CircularImage(
         } else {
             1f
         }
-        Image(
-            imageIcon,
+        AsyncImage(
+            imageUrl,
             contentDescription = null,
             contentScale = contentScale,
             modifier = modifier

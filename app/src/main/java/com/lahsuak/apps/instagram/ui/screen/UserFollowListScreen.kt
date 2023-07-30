@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.instagram.models.User
@@ -54,13 +56,13 @@ fun UserFollowListScreen(
     val user = homeViewModel.getUserById(userId)
     if (user != null) {
         val users = if (isFollowing) {
-            homeViewModel.users.filter {
+            homeViewModel.users.collectAsState().value.filter {
                 user.followingIds.any { id ->
                     it.id == id
                 }
             }
         } else {
-            homeViewModel.users.filter {
+            homeViewModel.users.collectAsState().value.filter {
                 user.followerIds.any { id ->
                     it.id == id
                 }
@@ -116,7 +118,7 @@ fun FollowItem(user: User, modifier: Modifier, isFollowing: Boolean) {
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CircularImage(imageIcon = painterResource(id = user.profileImage), imageSize = 50.dp)
+        CircularImage(imageUrl = user.profileImage, imageSize = 50.dp)
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = user.name,
@@ -149,11 +151,13 @@ fun FollowListPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            val homeViewModel: HomeViewModel = viewModel()
+
             UserFollowListScreen(
                 isFollowing = false,
                 userId = MY_USER_ID,
                 navController = rememberNavController(),
-                homeViewModel = HomeViewModel()
+                homeViewModel = homeViewModel
             )
         }
     }

@@ -3,7 +3,7 @@ package com.lahsuak.apps.instagram.models
 import androidx.compose.ui.graphics.painter.Painter
 
 data class Chat(
-    val senderImage: Painter,
-    val receiverImage: Painter,
+    val senderImage: String,
+    val receiverImage: String,
     val msgs: List<Message>,
 )

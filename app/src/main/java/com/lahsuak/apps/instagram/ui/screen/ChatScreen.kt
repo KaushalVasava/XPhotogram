@@ -38,12 +38,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.instagram.R
@@ -78,8 +78,8 @@ fun ChatScreen(
 
     val myUserId = MY_USER_ID
     val chat = Chat(
-        senderImage = painterResource(id = R.drawable.mypic),
-        receiverImage = painterResource(id = R.drawable.nature),
+        senderImage = "https://cdn.pixabay.com/photo/2023/05/11/03/34/white-cockatoo-7985434_1280.jpg",
+        receiverImage = "https://cdn.pixabay.com/photo/2023/04/20/03/18/lizard-7938887_1280.jpg",
         msgs = listOf(
             Message("Hello", "12:45pm", userId = myUserId, isSeen = true),
             Message("Hey", "12:46pm", userId = userId, isSeen = true),
@@ -118,7 +118,7 @@ fun ChatScreen(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CircularImage(
-                            imageIcon = painterResource(id = user.profileImage),
+                            imageUrl = user.profileImage,
                             imageSize = 50.dp,
                             modifier = Modifier.clickable {
                                 navController.navigate(
@@ -169,7 +169,7 @@ fun ChatScreen(
 
 @Composable
 fun ChatItem(
-    userImage: Painter,
+    userImageUrl: String,
     message: Message,
     isLeft: Boolean,
 ) {
@@ -189,7 +189,7 @@ fun ChatItem(
         horizontalArrangement = horizontalArrangement
     ) {
         if (isLeft) {
-            CircularImage(imageIcon = userImage, imageSize = 50.dp)
+            CircularImage(imageUrl = userImageUrl, imageSize = 50.dp)
             Spacer(modifier = Modifier.width(8.dp))
         }
         Column {
@@ -241,7 +241,7 @@ fun ChatItem(
         }
         if (!isLeft) {
             Spacer(modifier = Modifier.width(8.dp))
-            CircularImage(imageIcon = userImage, imageSize = 50.dp)
+            CircularImage(imageUrl = userImageUrl, imageSize = 50.dp)
         }
     }
 }
@@ -255,9 +255,11 @@ fun ChatScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            val homeViewModel: HomeViewModel = viewModel()
+
             ChatScreen(
                 "12345",
-                HomeViewModel(),
+                homeViewModel,
                 navController = rememberNavController()
             )
         }

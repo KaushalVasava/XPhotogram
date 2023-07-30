@@ -70,7 +70,7 @@ fun PostItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CircularImage(
-                imageIcon = painterResource(id = user.profileImage),
+                imageUrl = user.profileImage,
                 imageSize = 40.dp,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 16.dp)
@@ -102,7 +102,7 @@ fun PostItem(
                     }
             )
         }
-        PostImage(image = painterResource(id = post.postImage))
+        PostImage(imageUrl = post.postImage)
         Spacer(modifier = Modifier.height(4.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -195,7 +195,7 @@ fun PostItem(
                 .clickable {
                     isExpanded = !isExpanded
                 },
-            maxLines = if (isExpanded) 5 else 2,
+            maxLines = if (isExpanded) 5 else 1,
             overflow = TextOverflow.Ellipsis
         )
     }
@@ -214,14 +214,14 @@ fun PostItemPreview() {
                 Post(
                     "123451",
                     AppConstants.MY_USER_ID,
-                    postImage = R.drawable.canva_logo,
+                    postImage = "https://cdn.pixabay.com/photo/2023/05/10/18/20/plant-7984681_1280.jpg",
                     caption = "I'm so happy bcz I create multiple apps and published in the play store",
                     likeCount = 8
                 ),
                 User(
                     id = AppConstants.MY_USER_ID,
                     name = "Kaushal",
-                    profileImage = R.drawable.mypic,
+                    profileImage = "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_1280.jpg",
                     bio = "Android developer | Nature Lover",
                     links = listOf("https://github.com//KaushalVasava"),
                     followerIds = listOf("12346", "12347", "12348", "12349"),

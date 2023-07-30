@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,7 +45,9 @@ import com.lahsuak.apps.instagram.ui.navigation.Screen
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +61,10 @@ class MainActivity : ComponentActivity() {
                 )
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                        .navigationBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val homeViewModel: HomeViewModel = viewModel()
@@ -133,7 +137,6 @@ internal fun SetupTransparentSystemUi(
     actualBackgroundColor: Color,
 ) {
     val minLuminanceForDarkIcons = .5f
-    val useDarkIcons = !isSystemInDarkTheme()
 
     SideEffect {
         systemUiController.setStatusBarColor(
@@ -158,6 +161,8 @@ fun DefaultPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             val navController = rememberNavController()
+            val homeViewModel: HomeViewModel = viewModel()
+
             Scaffold(
                 bottomBar = {
                     Row(
@@ -187,7 +192,7 @@ fun DefaultPreview() {
                             contentDescription = null,
                         )
                         CircularImage(
-                            imageIcon = painterResource(id = R.drawable.mypic),
+                            imageUrl = "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_1280.jpg",
                             imageSize = 24.dp,
                             isBorderVisible = false,
                             isNameVisible = false,
@@ -196,7 +201,8 @@ fun DefaultPreview() {
                     }
                 }
             ) {
-                AppNavHost(homeViewModel = HomeViewModel(), navController, Modifier.padding(it))
+
+                AppNavHost(homeViewModel = homeViewModel, navController, Modifier.padding(it))
             }
         }
     }

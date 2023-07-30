@@ -23,6 +23,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,8 +35,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
@@ -46,14 +49,14 @@ fun SearchScreen(homeViewModel: HomeViewModel, navController: NavController) {
     var query by remember {
         mutableStateOf("")
     }
+    val posts by homeViewModel.posts.collectAsState()
     Box {
         LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(125.dp)) {
             item(span = StaggeredGridItemSpan.FullLine) {
                 SearchBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(55.dp)
-                        .padding(horizontal = 8.dp),
+                        .padding(8.dp),
                     query = query,
                     leadingIcon = {
                         Icon(Icons.Default.Search, contentDescription = "Search")
@@ -81,11 +84,11 @@ fun SearchScreen(homeViewModel: HomeViewModel, navController: NavController) {
                     onActiveChange = {}
                 ) {}
             }
-            items(homeViewModel.posts) {
-                Image(
-                    painter = painterResource(id = it.postImage),
+            items(posts) {
+                AsyncImage(
+                    it.postImage,
                     contentDescription = it.caption,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .border(
                             1.dp,
@@ -111,8 +114,10 @@ fun SearchPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            val homeViewModel: HomeViewModel = viewModel()
+
             SearchScreen(
-                HomeViewModel(),
+                homeViewModel,
                 navController = rememberNavController()
             )
         }

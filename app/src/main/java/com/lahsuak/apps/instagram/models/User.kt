@@ -1,12 +1,9 @@
 package com.lahsuak.apps.instagram.models
 
-import androidx.annotation.DrawableRes
-
 data class User(
     val id: String,
     val name: String,
-    @DrawableRes
-    val profileImage: Int,
+    val profileImage: String,
     val bio: String,
     val links: List<String>,
     val followerIds: List<String>,

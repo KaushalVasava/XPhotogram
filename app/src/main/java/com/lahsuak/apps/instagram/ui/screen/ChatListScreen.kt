@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,19 +26,19 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.instagram.ui.components.CircularImage
@@ -54,7 +53,7 @@ fun ChatListScreen(
     homeViewModel: HomeViewModel,
     navController: NavController,
 ) {
-    val data = homeViewModel.users
+    val data by homeViewModel.users.collectAsState()
     var query by remember {
         mutableStateOf("")
     }
@@ -119,7 +118,7 @@ fun ChatListScreen(
             }) {
                 UserChatItem(
                     userName = it.name,
-                    userImage = painterResource(id = it.profileImage),
+                    imageUrl = it.profileImage,
                     lastMsg = "Hi sdksjdsdsdskdsjdsdsdjsdsdsdsvyhufsdfygdsfsdgysfdtsgdesdghdfnfesfvbnsf",
                     modifier = Modifier.clickable {
                         navController.navigate(
@@ -135,7 +134,7 @@ fun ChatListScreen(
 @Composable
 fun UserChatItem(
     userName: String,
-    userImage: Painter,
+    imageUrl: String,
     lastMsg: String,
     modifier: Modifier = Modifier,
 ) {
@@ -145,7 +144,7 @@ fun UserChatItem(
             .padding(vertical = 4.dp)
             .fillMaxWidth()
     ) {
-        CircularImage(imageIcon = userImage, imageSize = 55.dp)
+        CircularImage(imageUrl = imageUrl, imageSize = 55.dp)
         Spacer(modifier = Modifier.width(8.dp))
         Column(
             horizontalAlignment = Alignment.Start,
@@ -172,8 +171,9 @@ fun ChatListPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            val homeViewModel: HomeViewModel = viewModel()
             ChatListScreen(
-                HomeViewModel(),
+                homeViewModel,
                 navController = rememberNavController()
             )
         }
