@@ -12,6 +12,7 @@ import com.lahsuak.apps.instagram.ui.screen.ChatListScreen
 import com.lahsuak.apps.instagram.ui.screen.ChatScreen
 import com.lahsuak.apps.instagram.ui.screen.CreatePostScreen
 import com.lahsuak.apps.instagram.ui.screen.InstaHomeScreen
+import com.lahsuak.apps.instagram.ui.screen.NotificationScreen
 import com.lahsuak.apps.instagram.ui.screen.ProfileScreen
 import com.lahsuak.apps.instagram.ui.screen.ReelsScreen
 import com.lahsuak.apps.instagram.ui.screen.SearchScreen
@@ -117,6 +118,9 @@ fun AppNavHost(
             postId?.let { id ->
                 ViewStory(id,homeViewModel = homeViewModel, navController = navController)
             }
+        }
+        composable(NavigationItem.Notification.route){
+            NotificationScreen(homeViewModel = homeViewModel, navController = navController)
         }
     }
 }

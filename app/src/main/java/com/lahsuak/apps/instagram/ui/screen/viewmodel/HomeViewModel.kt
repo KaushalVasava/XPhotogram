@@ -13,7 +13,7 @@ class HomeViewModel : ViewModel() {
     val users = homeRepo.getUser()
     val posts = homeRepo.getPosts()
     val stories = homeRepo.getStories()
-
+    val notifications = homeRepo.getNotifications()
     fun getUsersByIds(userIds: List<String>): List<User> {
         return users.filter { user ->
             userIds.any {

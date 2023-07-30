@@ -2,6 +2,7 @@ package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +39,7 @@ import com.lahsuak.apps.instagram.ui.components.MiddlePart
 import com.lahsuak.apps.instagram.ui.components.PostSection
 import com.lahsuak.apps.instagram.ui.components.PostTabView
 import com.lahsuak.apps.instagram.ui.components.ProfileDescription
+import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
@@ -73,7 +76,9 @@ fun ProfileScreen(
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = "notification",
-                            modifier = Modifier.padding(8.dp)
+                            modifier = Modifier.padding(8.dp).clickable {
+                                navController.navigate(NavigationItem.Notification.route)
+                            }
                         )
                         Icon(
                             imageVector = Icons.Default.Menu,
@@ -84,23 +89,35 @@ fun ProfileScreen(
                 }
             )
             Spacer(modifier = Modifier.height(2.dp))
-            MiddlePart(user, navController)
+            MiddlePart(
+                user, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp),
+                navController
+            )
             Spacer(modifier = Modifier.height(2.dp))
             ProfileDescription(
                 displayName = user.name,
                 description = user.bio,
                 url = "https://github.com//KaushalVasava",
                 followedBy = listOf("Kaushal, Mar"),
-                otherCount = 34
+                otherCount = 34,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
-            ButtonSection(Modifier.fillMaxWidth(), userType = userType)
+            ButtonSection(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                userType = userType
+            )
             Spacer(modifier = Modifier.height(16.dp))
             HighlightSection(
                 highlights = stories,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             PostTabView(

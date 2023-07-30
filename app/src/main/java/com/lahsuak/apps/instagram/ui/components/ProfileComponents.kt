@@ -57,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.Post
 import com.lahsuak.apps.instagram.models.Story
 import com.lahsuak.apps.instagram.models.User
@@ -67,13 +68,16 @@ import com.lahsuak.apps.instagram.ui.theme.LIGHT_BLUE
 import com.lahsuak.apps.instagram.util.openTab
 
 @Composable
-fun MiddlePart(user: User, navController: NavController) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+fun MiddlePart(
+    user: User,
+    modifier: Modifier = Modifier,
+    navController: NavController,
+) {
+    Column(modifier = modifier) {
         Row(
             verticalAlignment = CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             CircularImage(
                 imageIcon = painterResource(id = user.profileImage),
@@ -131,14 +135,13 @@ fun ProfileDescription(
     url: String,
     followedBy: List<String>,
     otherCount: Int,
+    modifier: Modifier = Modifier,
 ) {
     val letterSpacing = 0.5.sp
     val lineHeight = 16.sp
     val context = LocalContext.current
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier = modifier
     ) {
         Text(
             text = displayName,
@@ -193,11 +196,6 @@ fun ButtonSection(
     modifier: Modifier = Modifier,
     userType: UserType,
 ) {
-    val isFollower by remember {
-        mutableStateOf(
-            userType == UserType.FOLLOWING
-        )
-    }
     val minWidth = 130.dp
     val firstText = when (userType) {
         UserType.FOLLOWING -> {
@@ -219,7 +217,7 @@ fun ButtonSection(
     }
 
     val firstBtnColor = if (userType == UserType.FOLLOWER) {
-        Color.Blue
+        LIGHT_BLUE
     } else {
         MaterialTheme.colorScheme.inverseOnSurface
     }
@@ -229,7 +227,7 @@ fun ButtonSection(
         MaterialTheme.colorScheme.onBackground
     }
     Row(
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
     ) {
         ActionButton(
@@ -293,12 +291,12 @@ fun HighlightSection(
     modifier: Modifier = Modifier,
     highlights: List<Story>,
 ) {
-    LazyRow {
+    LazyRow(modifier = modifier) {
         items(highlights) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = modifier
+                modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 CircularImage(
                     imageIcon = painterResource(id = it.image),
@@ -331,7 +329,7 @@ fun PostTabView(
         selectedTabIndex = selectedTabIndex,
         containerColor = Color.Transparent,
         contentColor = Color.Black,
-        modifier = modifier.padding(vertical = 2.dp)
+        modifier = modifier.padding(vertical = 1.dp)
     ) {
         imageWithText.forEachIndexed { index, item ->
             Tab(selected = selectedTabIndex == index,
@@ -401,11 +399,15 @@ fun ActionButtonPreview() {
             modifier = Modifier,
             color = MaterialTheme.colorScheme.background
         ) {
-            ActionButton(
-                text = "Follow",
-                textColor = Color.White,
-                backgroundColor = LIGHT_BLUE,
-            )
+            PostTabView(
+                imageWithText = listOf(
+                    "Posts" to
+                            painterResource(id = R.drawable.ic_grid),
+                    "Reels" to painterResource(id = R.drawable.ic_video),
+                    "Profile" to
+                            painterResource(id = R.drawable.ic_profile),
+                )
+            ) {}
         }
     }
 }

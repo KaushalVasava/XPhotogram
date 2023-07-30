@@ -63,10 +63,13 @@ fun ChatScreen(
     navController: NavController,
 ) {
     var isProgress by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
     if (isProgress) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             CircularProgressIndicator()
         }
     }
@@ -145,7 +148,7 @@ fun ChatScreen(
                     }
                 }, navigationIcon = {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back",
-                        modifier = Modifier.clickable {
+                        modifier = Modifier.padding(8.dp).clickable {
                             navController.popBackStack()
                         })
                 }
@@ -225,6 +228,7 @@ fun ChatItem(
                     message.timeStamp,
                     color = Color.Gray,
                     fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.End)
                 )
             }
             Spacer(Modifier.height(4.dp))
@@ -252,7 +256,7 @@ fun ChatScreenPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             ChatScreen(
-                "dsdddds",
+                "12345",
                 HomeViewModel(),
                 navController = rememberNavController()
             )

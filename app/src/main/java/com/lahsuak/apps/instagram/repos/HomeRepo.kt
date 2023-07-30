@@ -1,11 +1,13 @@
 package com.lahsuak.apps.instagram.repos
 
 import com.lahsuak.apps.instagram.R
+import com.lahsuak.apps.instagram.models.Notification
 import com.lahsuak.apps.instagram.models.Post
 import com.lahsuak.apps.instagram.models.Story
 import com.lahsuak.apps.instagram.models.User
 import com.lahsuak.apps.instagram.models.UserType
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
+import java.util.UUID
 
 class HomeRepo {
     fun getUser(): List<User> {
@@ -68,7 +70,7 @@ class HomeRepo {
                 bio = "Clothes maker",
                 links = listOf("https://github.com//KaushalVasava"),
                 followerIds = listOf("12347", "12348"),
-                followingIds = listOf(MY_USER_ID,"12348"),
+                followingIds = listOf(MY_USER_ID, "12348"),
                 postIds = emptyList(),
                 storyIds = emptyList(),
             ),
@@ -79,7 +81,7 @@ class HomeRepo {
                 bio = "Traveller",
                 links = listOf("https://github.com//KaushalVasava"),
                 followerIds = listOf("12347", "12348"),
-                followingIds = listOf(MY_USER_ID,"12347", "12349"),
+                followingIds = listOf(MY_USER_ID, "12347", "12349"),
                 postIds = listOf("123451", "123452", "123453", "123454"),
                 storyIds = emptyList(),
             ),
@@ -286,5 +288,27 @@ class HomeRepo {
             Story("12423", "12347", image = R.drawable.imag),
             Story("12424", "12347", image = R.drawable.flashlight_logo),
         )
+    }
+
+    fun getNotifications(): List<Notification> {
+        val list = mutableListOf<Notification>()
+        for (i in 0..20) {
+            val images = listOf(
+                R.drawable.nature,
+                R.drawable.androidstudio_logo,
+                R.drawable.imag,
+                R.drawable.androidstudio_logo
+            )
+            list.add(
+                Notification(
+                    id = UUID.randomUUID().toString(),
+                    image = images.random(),
+                    title = "Your post$i liked by Test user$i",
+                    timeDate = System.currentTimeMillis(),
+                    actionBy = "${25 * i} likes"
+                )
+            )
+        }
+        return list
     }
 }

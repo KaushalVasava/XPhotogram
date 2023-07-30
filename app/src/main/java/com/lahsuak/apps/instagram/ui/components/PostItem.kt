@@ -44,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.Post
 import com.lahsuak.apps.instagram.models.User
@@ -72,12 +73,24 @@ fun PostItem(
                 imageIcon = painterResource(id = user.profileImage),
                 imageSize = 40.dp,
                 modifier = Modifier
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
                     .clickable {
                         onImageClick()
                     }
             )
-            Text(user.name, modifier = Modifier.weight(1f))
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(vertical = 4.dp)) {
+                Text(user.name)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "location",
+                    fontSize = 12.sp,
+                    color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.Default.MoreVert,
@@ -94,6 +107,7 @@ fun PostItem(
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 8.dp)
         ) {
             var isFavorite by remember { mutableStateOf(false) }
 
@@ -171,13 +185,13 @@ fun PostItem(
                 disableIcon = painterResource(id = R.drawable.ic_bookmark_border)
             )
         }
-        Text("$likes likes", Modifier.padding(horizontal = 8.dp))
+        Text("$likes likes", Modifier.padding(horizontal = 16.dp))
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = post.caption,
             modifier = Modifier
                 .animateContentSize()
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 16.dp)
                 .clickable {
                     isExpanded = !isExpanded
                 },

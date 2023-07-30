@@ -8,6 +8,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -41,7 +42,7 @@ fun CircularImage(
     name: String? = null,
     isAnimated: Boolean = false,
     contentScale: ContentScale = ContentScale.Crop,
-    width: Dp = 3.dp
+    width: Dp = 3.dp,
 ) {
     val borderWidth by remember(key1 = isBorderVisible) {
         mutableStateOf(if (isBorderVisible) width else 0.dp)
@@ -99,7 +100,8 @@ fun CircularImage(
                 style = TextStyle(fontSize = 12.sp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp)
             )
         }
     }
