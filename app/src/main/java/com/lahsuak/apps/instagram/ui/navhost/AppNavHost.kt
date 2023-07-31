@@ -76,7 +76,7 @@ fun AppNavHost(
                 }
             )) {
             val userId = it.arguments?.getString("userId") ?: "userid"
-            ChatScreen(userId, homeViewModel = homeViewModel, navController = navController)
+            ChatScreen(userId, homeViewModel = homeViewModel , navController = navController)
         }
         composable(
             "${NavigationItem.Profile.route}/{userid}",

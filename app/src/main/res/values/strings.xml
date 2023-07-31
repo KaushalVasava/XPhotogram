@@ -7,4 +7,7 @@ parent is an existing reference that can be used to specify constraints towards 
     <string name="follow">Follow</string>
     <string name="reels">Reels</string>
     <string name="search_name">Search name</string>
+    <string name="posts">Posts</string>
+    <string name="profile">Profile</string>
+    <string name="message_hint">Message...</string>
 </resources>

@@ -1,9 +1,15 @@
 package com.lahsuak.apps.instagram
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -24,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -33,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -71,53 +79,68 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+                    val screens = listOf(
+                        NavigationItem.Home.route,
+                        NavigationItem.Search.route,
+                        NavigationItem.CreatePost.route,
+                        NavigationItem.Reels.route,
+                        "${NavigationItem.Profile.route}/{userid}"
+                    )
+                    val showBottomBar = navController
+                        .currentBackStackEntryAsState().value?.destination?.route in screens.map { it }
                     Scaffold(
                         bottomBar = {
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .fillMaxWidth()
+                            AnimatedVisibility(
+                                visible = showBottomBar,
+                                enter = fadeIn(),
+                                exit = fadeOut(),
                             ) {
-                                BottomNavigationBar(
-                                    items = listOf(
-                                        BottomNavItem(
-                                            NavigationItem.Home.route,
-                                            Screen.HOME.name,
-                                            icon = rememberVectorPainter(image = Icons.Default.Home)
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    modifier = Modifier
+                                        .background(MaterialTheme.colorScheme.background)
+                                        .fillMaxWidth()
+                                ) {
+                                    BottomNavigationBar(
+                                        items = listOf(
+                                            BottomNavItem(
+                                                NavigationItem.Home.route,
+                                                Screen.HOME.name,
+                                                icon = rememberVectorPainter(image = Icons.Default.Home)
+                                            ),
+                                            BottomNavItem(
+                                                NavigationItem.Search.route,
+                                                Screen.SEARCH.name,
+                                                icon = rememberVectorPainter(image = Icons.Default.Search)
+                                            ),
+                                            BottomNavItem(
+                                                NavigationItem.CreatePost.route,
+                                                Screen.CREATE_POST.name,
+                                                icon = rememberVectorPainter(image = Icons.Default.AddCircle)
+                                            ),
+                                            BottomNavItem(
+                                                NavigationItem.Reels.route,
+                                                Screen.REELS.name,
+                                                icon = painterResource(id = R.drawable.ic_video)
+                                            ),
+                                            BottomNavItem(
+                                                NavigationItem.Profile.route,
+                                                Screen.PROFILE.name,
+                                                icon = rememberVectorPainter(image = Icons.Default.Person)
+                                            ),
                                         ),
-                                        BottomNavItem(
-                                            NavigationItem.Search.route,
-                                            Screen.SEARCH.name,
-                                            icon = rememberVectorPainter(image = Icons.Default.Search)
-                                        ),
-                                        BottomNavItem(
-                                            NavigationItem.CreatePost.route,
-                                            Screen.CREATE_POST.name,
-                                            icon = rememberVectorPainter(image = Icons.Default.AddCircle)
-                                        ),
-                                        BottomNavItem(
-                                            NavigationItem.Reels.route,
-                                            Screen.REELS.name,
-                                            icon = painterResource(id = R.drawable.ic_video)
-                                        ),
-                                        BottomNavItem(
-                                            NavigationItem.Profile.route,
-                                            Screen.PROFILE.name,
-                                            icon = rememberVectorPainter(image = Icons.Default.Person)
-                                        ),
-                                    ),
-                                    navController = navController,
-                                    onItemClick = {
-                                        if (it.route == NavigationItem.Profile.route) {
-                                            navController.navigate(
-                                                "${NavigationItem.Profile.route}/$MY_USER_ID"
-                                            )
-                                        } else {
-                                            navController.navigate(it.route)
+                                        navController = navController,
+                                        onItemClick = {
+                                            if (it.route == NavigationItem.Profile.route) {
+                                                navController.navigate(
+                                                    "${NavigationItem.Profile.route}/$MY_USER_ID"
+                                                )
+                                            } else {
+                                                navController.navigate(it.route)
+                                            }
                                         }
-                                    }
-                                )
+                                    )
+                                }
                             }
                         }
                     ) {

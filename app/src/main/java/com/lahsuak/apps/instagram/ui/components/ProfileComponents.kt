@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -291,13 +292,13 @@ fun HighlightSection(
     highlights: List<Story>,
     navController: NavController,
 ) {
-    LazyRow(modifier = modifier) {
+    LazyRow(modifier = modifier.padding(start = 8.dp)) {
         items(highlights) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 8.dp)
                     .clickable {
                         navController.navigate("${NavigationItem.ViewStory.route}/${it.id}/${it.userId}")
                     }
@@ -405,10 +406,10 @@ fun ActionButtonPreview() {
         ) {
             PostTabView(
                 imageWithText = listOf(
-                    "Posts" to
+                    stringResource(R.string.posts) to
                             painterResource(id = R.drawable.ic_grid),
-                    "Reels" to painterResource(id = R.drawable.ic_video),
-                    "Profile" to
+                    stringResource(id = R.string.reels) to painterResource(id = R.drawable.ic_video),
+                    stringResource(R.string.profile) to
                             painterResource(id = R.drawable.ic_profile),
                 )
             ) {}

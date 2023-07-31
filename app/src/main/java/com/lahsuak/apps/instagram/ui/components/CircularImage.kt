@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -50,12 +51,6 @@ fun CircularImage(
     } else {
         Brush.linearGradient(listOf(Color.Transparent, Color.Transparent))
     }
-//    val infiniteTransition = rememberInfiniteTransition(label = "infinite")
-//    val rotationAnimation = infiniteTransition.animateFloat(
-//        initialValue = 0f,
-//        targetValue = 360f,
-//        animationSpec = infiniteRepeatable(tween(1000, easing = LinearEasing)), label = "rotate"
-//    )
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         val alpha = if (isAnimated) {
@@ -89,7 +84,6 @@ fun CircularImage(
                     shape = CircleShape,
                     brush = brush
                 )
-
                 .align(Alignment.CenterHorizontally),
         )
         if (isNameVisible && name.isNullOrEmpty().not()) {

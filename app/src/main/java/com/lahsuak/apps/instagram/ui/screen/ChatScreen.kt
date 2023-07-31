@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,36 +22,41 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.Chat
 import com.lahsuak.apps.instagram.models.Message
 import com.lahsuak.apps.instagram.ui.components.CircularImage
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
+import com.lahsuak.apps.instagram.ui.theme.LIGHT_BLUE
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
 import com.lahsuak.apps.instagram.util.DemoData
 
@@ -108,57 +114,126 @@ fun ChatScreen(
                 ),
             )
         )
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            TopAppBar(
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        CircularImage(
-                            imageUrl = user.profileImage,
-                            imageSize = 50.dp,
-                            modifier = Modifier.clickable {
-                                navController.navigate(
-                                    "${NavigationItem.Profile.route}/${user.id}"
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                TopAppBar(
+                    title = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            CircularImage(
+                                imageUrl = user.profileImage,
+                                imageSize = 50.dp,
+                                modifier = Modifier.clickable {
+                                    navController.navigate(
+                                        "${NavigationItem.Profile.route}/${user.id}"
+                                    )
+                                }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(user.name, fontSize = 16.sp)
+                                Box(
+                                    Modifier
+                                        .size(10.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.Green)
                                 )
                             }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Column {
-                            Text(user.name, fontSize = 16.sp)
-                            Box(
-                                Modifier
-                                    .size(10.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.Green)
+                        }
+                    },
+                    actions = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "menu",
+                                modifier = Modifier.padding(8.dp)
                             )
                         }
+                    }, navigationIcon = {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back",
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .clickable {
+                                    navController.popBackStack()
+                                })
                     }
-                },
-                actions = {
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "menu",
-                            modifier = Modifier.padding(8.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn {
+                    items(chat.msgs) {
+                        if (it.userId == myUserId) {
+                            ChatItem(chat.senderImage, it, true)
+                        } else {
+                            ChatItem(chat.receiverImage, it, false)
+                        }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(56.dp))
+                    }
+                }
+            }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .align(Alignment.BottomCenter),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                var text by rememberSaveable {
+                    mutableStateOf("")
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_camera),
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(LIGHT_BLUE)
+                        .padding(4.dp),
+                    tint = Color.White,
+                    contentDescription = "Camera",
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                TextField(
+                    value = text,
+                    placeholder = {
+                        Text(
+                            stringResource(R.string.message_hint),
+                            color = Color.Gray,
                         )
-                    }
-                }, navigationIcon = {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back",
-                        modifier = Modifier.padding(16.dp).clickable {
-                            navController.popBackStack()
-                        })
-                }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn {
-                items(chat.msgs) {
-                    if (it.userId == myUserId) {
-                        ChatItem(chat.senderImage, it, true)
-                    } else {
-                        ChatItem(chat.receiverImage, it, false)
-                    }
-                }
+                    },
+                    onValueChange = {
+                        text = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_mic), "Mic",
+                    modifier = Modifier.padding(4.dp),
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_image), "Gallery",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .clickable {
+                            navController.navigate(NavigationItem.CreatePost.route)
+                        }
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    Icons.Outlined.AddCircle, "Add",
+                    modifier = Modifier.padding(4.dp),
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(modifier = Modifier.width(8.dp))
             }
         }
     }
@@ -181,7 +256,7 @@ fun ChatItem(
     Row(
         Modifier
             .padding(horizontal = 16.dp, vertical = 4.dp)
-            .fillMaxSize(),
+            .fillMaxSize(1f),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = horizontalArrangement
     ) {
@@ -249,16 +324,66 @@ fun ChatItem(
 fun ChatScreenPreview() {
     JetPackComposeBasicTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.background
         ) {
-            val homeViewModel: HomeViewModel = viewModel()
-
-            ChatScreen(
-                "12345",
-                homeViewModel,
-                navController = rememberNavController()
-            )
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                var text by rememberSaveable {
+                    mutableStateOf("")
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_camera),
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(LIGHT_BLUE)
+                        .padding(4.dp),
+                    tint = Color.White,
+                    contentDescription = "camera",
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                TextField(
+                    value = text,
+                    placeholder = {
+                        Text(
+                            stringResource(R.string.message_hint),
+                            color = Color.Gray,
+                        )
+                    },
+                    onValueChange = {
+                        text = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_mic), "Mic",
+                    modifier = Modifier.padding(4.dp),
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_image), "gallery",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(4.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    Icons.Outlined.AddCircle, "Add",
+                    modifier = Modifier.padding(4.dp),
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
         }
     }
 }
