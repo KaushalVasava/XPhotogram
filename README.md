@@ -1,7 +1,7 @@
 # Instagram
 It is an instagram clone using Jetpack compose. I have used Rest Api, Dependency Injection, MVVM Architecture, Animations etc.
 
-You can contribute this porject. Just Solve issue or update code and raise PR. I'll do code review and marge your changes into main branch.
+You can contribute this project. Just Solve issue or update code and raise PR. I'll do code review and merge your changes into main branch.
 
 # Technologies Used:
 - Kotlin
