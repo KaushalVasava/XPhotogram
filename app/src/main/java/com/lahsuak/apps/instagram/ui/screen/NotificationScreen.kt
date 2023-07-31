@@ -51,7 +51,7 @@ fun NotificationScreen(
     Column {
         TopAppBar(title = {
             Text(
-                "Notifications",
+                "Notifications", fontSize = 18.sp
             )
         }, navigationIcon = {
             Icon(

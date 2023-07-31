@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -47,7 +48,7 @@ import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
     userId: String,
@@ -73,7 +74,7 @@ fun ProfileScreen(
     if (user != null) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text(user.id) },
+                title = { Text(user.id, fontSize = 18.sp) },
                 actions = {
                     Row {
                         Icon(

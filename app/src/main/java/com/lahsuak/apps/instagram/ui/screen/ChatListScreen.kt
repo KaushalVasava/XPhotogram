@@ -72,7 +72,7 @@ fun ChatListScreen(
         }
         TopAppBar(
             title = {
-                Text("Chats", fontSize = 16.sp)
+                Text(text ="Chats", fontSize = 18.sp)
             },
             actions = {
                 Icon(
@@ -91,10 +91,7 @@ fun ChatListScreen(
                 )
             }
         )
-        SearchBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+        SearchBar(modifier = Modifier.fillMaxWidth(),
             query = query,
             leadingIcon = {
                 Icon(Icons.Default.Search, contentDescription = "Search")
@@ -142,7 +139,7 @@ fun ChatListScreen(
             }
 
             is BaseState.Success -> {
-                LazyColumn(Modifier.padding(horizontal = 8.dp)) {
+                LazyColumn {
                     if (searchData.isEmpty() || query.isEmpty()) {
                         searchData = state.data
                     } else {

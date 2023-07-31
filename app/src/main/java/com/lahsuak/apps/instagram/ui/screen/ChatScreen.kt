@@ -132,7 +132,7 @@ fun ChatScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Column {
-                                Text(user.name, fontSize = 16.sp)
+                                Text(user.name, fontSize = 18.sp)
                                 Box(
                                     Modifier
                                         .size(10.dp)
