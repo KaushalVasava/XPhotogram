@@ -1,4 +1,4 @@
-package com.lahsuak.apps.instagram.ui.screen.viewmodel
+package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -14,7 +14,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +26,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
@@ -52,42 +53,65 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.lahsuak.apps.instagram.R
+import com.lahsuak.apps.instagram.models.ApiFailure
+import com.lahsuak.apps.instagram.models.BaseState
 import com.lahsuak.apps.instagram.models.Story
 import com.lahsuak.apps.instagram.models.User
+import com.lahsuak.apps.instagram.ui.components.CenterCircularProgressBar
+import com.lahsuak.apps.instagram.ui.components.CenterErrorText
 import com.lahsuak.apps.instagram.ui.components.CircularImage
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
+import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
-import com.lahsuak.apps.instagram.util.AppConstants
+import com.lahsuak.apps.instagram.util.DemoData
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ViewStory(
     storyId: String,
+    userId: String,
     homeViewModel: HomeViewModel,
     navController: NavController,
 ) {
-    val story = homeViewModel.stories.collectAsState().value.find {
-        it.id == storyId
+    val storyState by homeViewModel.stories.collectAsState()
+    var pageCount by remember {
+        mutableIntStateOf(1)
     }
-    if (story != null) {
-        val user = homeViewModel.getUserById(story.userId)
-        if (user != null) {
-            StoryItem(story, user, onImageClick = {
-                navController.navigate(
-                    "${NavigationItem.Profile.route}/${user.id}"
-                )
-            }) {
-                navController.popBackStack()
+    val pagerState = rememberPagerState(pageCount = {
+        pageCount
+    })
+    HorizontalPager(state = pagerState) { page ->
+        when (val state = storyState) {
+            is BaseState.Failed -> {
+                when (state.error) {
+                    is ApiFailure.Unknown -> CenterErrorText(msg = state.error.error)
+                }
+            }
+
+            BaseState.Loading -> CenterCircularProgressBar()
+            is BaseState.Success -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    val stories = state.data.filter {
+                        it.userId == userId
+                    }
+                    pageCount = stories.size
+                    val user = homeViewModel.getUserById(stories[page].userId)
+                    if (user != null) {
+                        StoryItem(stories[page], user, {
+                             navController.navigate(
+                                 "${NavigationItem.Profile.route}/${user.id}"
+                             )
+                        }) {
+                            navController.popBackStack()
+                        }
+                    }
+                }
             }
         }
-    } else {
-        Text("No Post")
     }
 }
 
@@ -163,7 +187,7 @@ fun StoryItem(
                 .align(Alignment.BottomCenter)
         ) {
             Row(
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.Center
@@ -192,7 +216,7 @@ fun StoryItem(
                         isFavorite = !isFavorite
                     },
                     modifier = Modifier
-                        .padding(start = 8.dp, bottom = 2.dp)
+                        .padding(start = 8.dp)
                         .clip(CircleShape)
                         .background(Color.LightGray)
                 ) {
@@ -254,30 +278,10 @@ fun StoryItemPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             StoryItem(
-                Story(
-                    "12429",
-                    AppConstants.MY_USER_ID,
-                    image = "https://cdn.pixabay.com/photo/2023/05/16/13/02/green-lacewing-7997506_1280.jpg"
-                ),
-                User(
-                    id = AppConstants.MY_USER_ID,
-                    name = "Kaushal",
-                    profileImage = "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_1280.jpg",
-                    bio = "Android developer | Nature Lover",
-                    links = listOf("https://github.com//KaushalVasava"),
-                    followerIds = listOf("12346", "12347", "12348", "12349"),
-                    followingIds = listOf("12346", "12347", "12348", "12349", "12345"),
-                    postIds = listOf(
-                        "123464",
-                        "123465",
-                        "123466",
-                        "123467",
-                        "123468",
-                        "123469"
-                    ),
-                    storyIds = listOf("12411", "12412", "12413", "12429", "12428"),
-                ), {}, {}
-            )
+                story = DemoData.demoStory,
+                user = DemoData.demoUser,
+                onImageClick = {}
+            ) {}
         }
     }
 }

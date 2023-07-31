@@ -25,14 +25,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.lahsuak.apps.instagram.models.ApiFailure
+import com.lahsuak.apps.instagram.models.BaseState
 import com.lahsuak.apps.instagram.models.Notification
+import com.lahsuak.apps.instagram.ui.components.CenterCircularProgressBar
+import com.lahsuak.apps.instagram.ui.components.CenterErrorText
 import com.lahsuak.apps.instagram.ui.components.CircularImage
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
@@ -44,7 +47,7 @@ fun NotificationScreen(
     homeViewModel: HomeViewModel,
     navController: NavController,
 ) {
-    val notifications by homeViewModel.notifications.collectAsState()
+    val notificationsState by homeViewModel.notifications.collectAsState()
     Column {
         TopAppBar(title = {
             Text(
@@ -60,9 +63,23 @@ fun NotificationScreen(
             )
         }
         )
-        LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
-            items(notifications) {
-                NotificationItem(notification = it)
+        when (val state = notificationsState) {
+            is BaseState.Failed -> {
+                when (state.error) {
+                    is ApiFailure.Unknown -> CenterErrorText(msg = state.error.error)
+                }
+            }
+
+            BaseState.Loading -> {
+                CenterCircularProgressBar()
+            }
+
+            is BaseState.Success -> {
+                LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    items(state.data) {
+                        NotificationItem(notification = it)
+                    }
+                }
             }
         }
     }

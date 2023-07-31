@@ -11,7 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,9 +27,7 @@ fun ViewPostScreen(
     navController: NavController,
 ) {
 
-    val post = homeViewModel.posts.collectAsState().value.find {
-        it.id == postId
-    }
+    val post = homeViewModel.getPostById(postId)
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
@@ -55,7 +52,7 @@ fun ViewPostScreen(
                           "${NavigationItem.Profile.route}/${user.id}"
                       )
                 }){
-                    //
+                    //do something on more click
                 }
             }
         } else {

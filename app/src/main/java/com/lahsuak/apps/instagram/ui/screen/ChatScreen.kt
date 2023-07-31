@@ -38,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.Chat
 import com.lahsuak.apps.instagram.models.Message
 import com.lahsuak.apps.instagram.ui.components.CircularImage
@@ -54,6 +52,7 @@ import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
+import com.lahsuak.apps.instagram.util.DemoData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,44 +72,42 @@ fun ChatScreen(
             CircularProgressIndicator()
         }
     }
-    val user =
-        homeViewModel.getUserById(userId)
-
+    val user = homeViewModel.getUserById(userId)
     val myUserId = MY_USER_ID
-    val chat = Chat(
-        senderImage = "https://cdn.pixabay.com/photo/2023/05/11/03/34/white-cockatoo-7985434_1280.jpg",
-        receiverImage = "https://cdn.pixabay.com/photo/2023/04/20/03/18/lizard-7938887_1280.jpg",
-        msgs = listOf(
-            Message("Hello", "12:45pm", userId = myUserId, isSeen = true),
-            Message("Hey", "12:46pm", userId = userId, isSeen = true),
-            Message("How are you?", "12:47pm", userId = myUserId, isSeen = true),
-            Message("I'm good, hbu?", "12:49pm", userId = userId, isSeen = true),
-            Message("I'm good too, thanks", "12:53pm", userId = myUserId, isSeen = true),
-            Message(
-                "What are you doing",
-                "12:56pm",
-                userId = userId,
-                isSeen = true
-            ),
-            Message(
-                "?",
-                "12:56pm",
-                userId = userId,
-                isSeen = true
-            ),
-            Message(
-                "Nothing much, just code refactoring, wbu?",
-                "1:00pm",
-                userId = myUserId,
-                isSeen = false
-            ),
-            Message(
-                "Just resting", "1:00pm", userId = userId,
-            ),
-        )
-    )
     isProgress = false
     if (user != null) {
+        val chat = Chat(
+            senderImage = user.profileImage,
+            receiverImage = DemoData.urls.first(),
+            msgs = listOf(
+                Message("Hello", "12:45pm", userId = myUserId, isSeen = true),
+                Message("Hey", "12:46pm", userId = userId, isSeen = true),
+                Message("How are you?", "12:47pm", userId = myUserId, isSeen = true),
+                Message("I'm good, hbu?", "12:49pm", userId = userId, isSeen = true),
+                Message("I'm good too, thanks", "12:53pm", userId = myUserId, isSeen = true),
+                Message(
+                    "What are you doing",
+                    "12:56pm",
+                    userId = userId,
+                    isSeen = true
+                ),
+                Message(
+                    "?",
+                    "12:56pm",
+                    userId = userId,
+                    isSeen = true
+                ),
+                Message(
+                    "Nothing much, just code refactoring, wbu?",
+                    "1:00pm",
+                    userId = myUserId,
+                    isSeen = false
+                ),
+                Message(
+                    "Just resting", "1:00pm", userId = userId,
+                ),
+            )
+        )
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -148,7 +145,7 @@ fun ChatScreen(
                     }
                 }, navigationIcon = {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back",
-                        modifier = Modifier.padding(8.dp).clickable {
+                        modifier = Modifier.padding(16.dp).clickable {
                             navController.popBackStack()
                         })
                 }
@@ -183,7 +180,7 @@ fun ChatItem(
     }
     Row(
         Modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
             .fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = horizontalArrangement

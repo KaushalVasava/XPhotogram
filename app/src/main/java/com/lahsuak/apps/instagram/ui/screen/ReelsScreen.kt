@@ -2,7 +2,6 @@ package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +29,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +41,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,7 +50,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.lahsuak.apps.instagram.R
+import com.lahsuak.apps.instagram.models.ApiFailure
+import com.lahsuak.apps.instagram.models.BaseState
+import com.lahsuak.apps.instagram.ui.components.CenterCircularProgressBar
+import com.lahsuak.apps.instagram.ui.components.CenterErrorText
 import com.lahsuak.apps.instagram.ui.components.CircularImage
 import com.lahsuak.apps.instagram.ui.components.ToggleIconButton
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
@@ -56,140 +66,156 @@ import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ReelsScreen(homeViewModel: HomeViewModel, navController: NavController) {
-    // Display 10 items
+    val storyState by homeViewModel.stories.collectAsState()
+    var pageCount by remember{
+        mutableIntStateOf(1)
+    }
     val pagerState = rememberPagerState(pageCount = {
-        10
+        pageCount
     })
     VerticalPager(state = pagerState) { page ->
-        // Our page content
-        Box(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(id = R.drawable.rays),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier.fillMaxSize()
-            )
-            Column(Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        "Reels",
-                        fontSize = 18.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Icon(
-                        painterResource(id = R.drawable.ic_camera),
-                        contentDescription = "camera",
-                        tint = Color.White,
-                        modifier = Modifier.padding(16.dp)
-                    )
+        when (val state = storyState) {
+            is BaseState.Failed -> {
+                when (state.error) {
+                    is ApiFailure.Unknown -> CenterErrorText(msg = state.error.error)
                 }
             }
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier.fillMaxHeight()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    modifier = Modifier.padding(start = 16.dp)
-                ) {
-                    CircularImage(
-                        imageUrl = "https://cdn.pixabay.com/photo/2023/04/23/09/40/bird-7945398_1280.jpg",
-                        imageSize = 50.dp,
-                        modifier = Modifier.clickable {
-                            navController.navigate(
-                                "${NavigationItem.Profile.route}/${MY_USER_ID}"
-                            )
-                        }
+
+            BaseState.Loading -> CenterCircularProgressBar()
+            is BaseState.Success -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    val stories = state.data
+                    pageCount = stories.size
+                    AsyncImage(
+                        stories[page].image,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier.fillMaxSize()
                     )
-                    Spacer(Modifier.width(8.dp))
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                    ) {
+                    Column(Modifier.fillMaxWidth()) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.height(50.dp)
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                "UserName",
+                                stringResource(R.string.reels),
+                                fontSize = 18.sp,
                                 color = Color.White,
-                                maxLines = 1,
-                                modifier = Modifier.weight(1f),
-                                overflow = TextOverflow.Ellipsis
+                                modifier = Modifier.padding(16.dp)
                             )
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                "Follow",
-                                color = Color.White,
-                                fontSize = 14.sp,
-                                modifier = Modifier
-                                    .border(
-                                        width = 1.dp,
-                                        color = Color.White,
-                                        shape = RoundedCornerShape(6.dp)
-                                    )
-                                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                            Icon(
+                                painterResource(id = R.drawable.ic_camera),
+                                contentDescription = "camera",
+                                tint = Color.White,
+                                modifier = Modifier.padding(16.dp)
                             )
                         }
                     }
-                    Spacer(Modifier.width(8.dp))
                     Column(
                         verticalArrangement = Arrangement.Bottom,
-                        modifier = Modifier,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier = Modifier.fillMaxHeight()
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            ToggleIconButton(
-                                enableIcon =
-                                rememberVectorPainter(image = Icons.Default.Favorite),
-                                disableIcon =
-                                rememberVectorPainter(image = Icons.Default.FavoriteBorder),
-                                disableTint = Color.White
+                        Row(
+                            verticalAlignment = Alignment.Bottom,
+                            modifier = Modifier.padding(start = 16.dp)
+                        ) {
+                            CircularImage(
+                                imageUrl = stories[page].image,
+                                imageSize = 50.dp,
+                                modifier = Modifier.clickable {
+                                    navController.navigate(
+                                        "${NavigationItem.Profile.route}/${MY_USER_ID}"
+                                    )
+                                }
                             )
-                            Text(
-                                "123k",
-                                maxLines = 1,
-                                color = Color.White,
-                                textAlign = TextAlign.Center
-                            )
+                            Spacer(Modifier.width(8.dp))
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.height(50.dp)
+                                ) {
+                                    Text(
+                                        text = stories[page].name ?: "Test",
+                                        color = Color.White,
+                                        maxLines = 1,
+                                        modifier = Modifier.weight(1f),
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(
+                                        stringResource(R.string.follow),
+                                        color = Color.White,
+                                        fontSize = 14.sp,
+                                        modifier = Modifier
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.White,
+                                                shape = RoundedCornerShape(6.dp)
+                                            )
+                                            .padding(vertical = 4.dp, horizontal = 8.dp)
+                                    )
+                                }
+                            }
+                            Spacer(Modifier.width(8.dp))
+                            Column(
+                                verticalArrangement = Arrangement.Bottom,
+                                modifier = Modifier,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    ToggleIconButton(
+                                        enableIcon =
+                                        rememberVectorPainter(image = Icons.Default.Favorite),
+                                        disableIcon =
+                                        rememberVectorPainter(image = Icons.Default.FavoriteBorder),
+                                        disableTint = Color.White
+                                    )
+                                    Text(
+                                        stories[page].likeCount.toString(),
+                                        maxLines = 1,
+                                        color = Color.White,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                IconText(
+                                    count = 1889,
+                                    tint = Color.White,
+                                    icon = rememberVectorPainter(image = Icons.Outlined.Email)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                IconText(
+                                    count = 405,
+                                    tint = Color.White,
+                                    icon = rememberVectorPainter(image = Icons.Outlined.Send)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Icon(
+                                    Icons.Default.MoreVert,
+                                    tint = Color.White,
+                                    contentDescription = null
+                                )
+                            }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        IconText(
-                            count = 1889,
-                            tint = Color.White,
-                            icon = rememberVectorPainter(image = Icons.Outlined.Email)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        IconText(
-                            count = 405,
-                            tint = Color.White,
-                            icon = rememberVectorPainter(image = Icons.Outlined.Send)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Icon(
-                            Icons.Default.MoreVert,
-                            tint = Color.White,
-                            contentDescription = null
+
+                        Text(
+                            text = stories[page].name?:"Something new",
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            fontSize = 12.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(16.dp)
                         )
                     }
                 }
-
-                Text(
-                    text = "Ray light comes to caves and make it brighter dfdfdfdfdfdfd",
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    fontSize = 12.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(16.dp)
-                )
             }
         }
+        // Our page content
     }
 }
 
@@ -220,7 +246,6 @@ fun ReelsPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             val homeViewModel: HomeViewModel = viewModel()
-
             ReelsScreen(homeViewModel = homeViewModel, rememberNavController())
         }
     }

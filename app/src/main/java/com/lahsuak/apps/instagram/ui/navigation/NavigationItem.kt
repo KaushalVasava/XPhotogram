@@ -11,7 +11,7 @@ enum class Screen {
     FOLLOWERS,
     NOTIFICATION,
     VIEW_POST,
-    VIEW_STORY
+    VIEW_STORY,
 }
 
 sealed class NavigationItem(val route: String) {

@@ -3,6 +3,8 @@ package com.lahsuak.apps.instagram.ui.screen.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lahsuak.apps.instagram.models.ApiFailure
+import com.lahsuak.apps.instagram.models.BaseState
 import com.lahsuak.apps.instagram.models.Notification
 import com.lahsuak.apps.instagram.models.Post
 import com.lahsuak.apps.instagram.models.Story
@@ -10,6 +12,7 @@ import com.lahsuak.apps.instagram.models.User
 import com.lahsuak.apps.instagram.repos.HomeRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,116 +20,133 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val homeRepo: HomeRepo,
 ) : ViewModel() {
-    val users = MutableStateFlow<List<User>>(emptyList())
-    val posts = MutableStateFlow<List<Post>>(emptyList())
-    val stories = MutableStateFlow<List<Story>>(emptyList())
-    val notifications = MutableStateFlow<List<Notification>>(emptyList())
+    private val _users =
+        MutableStateFlow<BaseState<List<User>, ApiFailure>>(BaseState.Loading)
+    val users: StateFlow<BaseState<List<User>, ApiFailure>>
+        get() = _users
+
+    private val _posts =
+        MutableStateFlow<BaseState<List<Post>, ApiFailure>>(BaseState.Loading)
+    val posts: StateFlow<BaseState<List<Post>, ApiFailure>>
+        get() = _posts
+
+    private val _stories =
+        MutableStateFlow<BaseState<List<Story>, ApiFailure>>(BaseState.Loading)
+    val stories: StateFlow<BaseState<List<Story>, ApiFailure>>
+        get() = _stories
+
+    private val _notifications =
+        MutableStateFlow<BaseState<List<Notification>, ApiFailure>>(BaseState.Loading)
+    val notifications: StateFlow<BaseState<List<Notification>, ApiFailure>>
+        get() = _notifications
 
     init {
         getUsers()
+        getPosts()
+        getStories()
+        getNotifications()
     }
 
-    fun getUsers() {
+    private fun getUsers() {
         viewModelScope.launch {
             try {
                 val response = homeRepo.getUserResponse()
                 if (response.type == "success_user") {
                     val user = response.data
-                    getPosts()
-                    getStories()
-                    getNotifications()
                     Log.d("TAG", "getUser: ${user.size}")
-                    users.value = user
+                    _users.value = BaseState.Success(user)
                 } else {
-                    Log.d("TAG", "data: Failed")
+                    _users.value = BaseState.Failed(ApiFailure.Unknown("Error"))
                 }
             } catch (e: Exception) {
-                Log.d("TAG", "data: ${e.message}")
+                _users.value = BaseState.Failed(ApiFailure.Unknown(e.message.toString()))
             }
-
         }
     }
 
-    fun getPosts() {
+    fun getUserById(userId: String): User? {
+        return (_users.value as BaseState.Success).data.find {
+            it.id == userId
+        }
+    }
+
+    fun getPostById(postId: String): Post? {
+        return (_posts.value as BaseState.Success).data.find {
+            it.id == postId
+        }
+    }
+
+    fun getStoryById(storyId: String): Story? {
+        return (_stories.value as BaseState.Success).data.find {
+            it.id == storyId
+        }
+    }
+
+    private fun getPosts() {
         viewModelScope.launch {
-            try {
-                val post = homeRepo.getPost()
-                Log.d("TAG", "getPosts: ${post.size}")
-                posts.value = post
+            _posts.value = try {
+                BaseState.Success(homeRepo.getPosts())
             } catch (e: Exception) {
-                Log.d("TAG", "data: ${e.message}")
-                posts.value = emptyList()
+                BaseState.Failed(ApiFailure.Unknown(e.message.toString()))
             }
         }
     }
 
-    fun getStories() {
+    private fun getStories() {
         viewModelScope.launch {
-            try {
-                val story = homeRepo.getStorie()
-                Log.d("TAG", "getStory: ${story.size}")
-                stories.value = story
+            _stories.value = try {
+                BaseState.Success(homeRepo.getStories())
             } catch (e: Exception) {
-                Log.d("TAG", "data: ${e.message}")
-                stories.value = emptyList()
+                BaseState.Failed(ApiFailure.Unknown(e.message.toString()))
             }
         }
     }
 
-    fun getNotifications() {
+    private fun getNotifications() {
         viewModelScope.launch {
-            try {
-                notifications.value = homeRepo.getNotification()
+            _notifications.value = try {
+                BaseState.Success(homeRepo.getNotifications())
             } catch (e: Exception) {
-                Log.d("TAG", "data: ${e.message}")
-                notifications.value = emptyList()
+                BaseState.Failed(ApiFailure.Unknown(e.message.toString()))
             }
         }
     }
 
-    fun getUsersByIds(userIds: List<String>): List<User> {
-        return users.value.filter { user ->
+    fun getUsersByIds(users: List<User>, userIds: List<String>): List<User> {
+        return users.filter { user ->
             userIds.any {
                 user.id == it
             }
         }
     }
 
-    fun getUserById(id: String): User? {
-        Log.d("TAG", "getUserById: $id and ${users.value.size}")
-        return users.value.find {
-            id == it.id
-        }
-    }
-
     fun getPosts(ids: List<String>): List<Post> {
-        return posts.value.filter { post ->
+        return (_posts.value as BaseState.Success).data.filter { post ->
             ids.any {
                 post.id == it
             }
         }
     }
 
-    fun getPostsByUserIds(userIds: List<String>): List<Post> {
-        return posts.value.filter { post ->
-            userIds.any {
-                post.userId == it
-            }
-        }
-    }
-
     fun getStories(ids: List<String>): List<Story> {
-        return stories.value.filter { story ->
+        return (_stories.value as BaseState.Success).data.filter { story ->
             ids.any {
                 story.id == it
             }
         }
     }
 
-    fun getStoriesByUserIds(userIds: List<String>): List<Story> {
-        return stories.value.filter { story ->
-            userIds.any {
-                story.userId == it
+    fun getFollowers(user: User): List<User> {
+        return (_users.value as BaseState.Success).data.filter {
+            user.followerIds.any { id ->
+                it.id == id
+            }
+        }
+    }
+    fun getFollowings(user: User): List<User> {
+        return (_users.value as BaseState.Success).data.filter {
+            user.followingIds.any { id ->
+                it.id == id
             }
         }
     }

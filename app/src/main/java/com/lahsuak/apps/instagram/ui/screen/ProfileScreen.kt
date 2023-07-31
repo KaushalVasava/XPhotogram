@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
@@ -34,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.UserType
 import com.lahsuak.apps.instagram.ui.components.ButtonSection
+import com.lahsuak.apps.instagram.ui.components.CenterCircularProgressBar
 import com.lahsuak.apps.instagram.ui.components.HighlightSection
 import com.lahsuak.apps.instagram.ui.components.MiddlePart
 import com.lahsuak.apps.instagram.ui.components.PostSection
@@ -44,7 +47,7 @@ import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     userId: String,
@@ -70,15 +73,17 @@ fun ProfileScreen(
     if (user != null) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text("lahsuak") },
+                title = { Text(user.id) },
                 actions = {
                     Row {
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = "notification",
-                            modifier = Modifier.padding(8.dp).clickable {
-                                navController.navigate(NavigationItem.Notification.route)
-                            }
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .clickable {
+                                    navController.navigate(NavigationItem.Notification.route)
+                                }
                         )
                         Icon(
                             imageVector = Icons.Default.Menu,
@@ -99,7 +104,7 @@ fun ProfileScreen(
             ProfileDescription(
                 displayName = user.name,
                 description = user.bio,
-                url = "https://github.com//KaushalVasava",
+                url = user.links.firstOrNull(),
                 followedBy = listOf("Kaushal, Mar"),
                 otherCount = 34,
                 modifier = Modifier
@@ -141,9 +146,9 @@ fun ProfileScreen(
             }
         }
     }
-//    else {
-//        CircularProgressIndicator()
-//    }
+    else {
+        CenterCircularProgressBar()
+    }
 }
 
 @Preview(showBackground = true)

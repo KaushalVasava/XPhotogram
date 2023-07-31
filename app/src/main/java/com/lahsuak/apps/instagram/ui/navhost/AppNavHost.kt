@@ -11,15 +11,15 @@ import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.screen.ChatListScreen
 import com.lahsuak.apps.instagram.ui.screen.ChatScreen
 import com.lahsuak.apps.instagram.ui.screen.CreatePostScreen
-import com.lahsuak.apps.instagram.ui.screen.InstaHomeScreen
+import com.lahsuak.apps.instagram.ui.screen.HomeScreen
 import com.lahsuak.apps.instagram.ui.screen.NotificationScreen
 import com.lahsuak.apps.instagram.ui.screen.ProfileScreen
 import com.lahsuak.apps.instagram.ui.screen.ReelsScreen
 import com.lahsuak.apps.instagram.ui.screen.SearchScreen
 import com.lahsuak.apps.instagram.ui.screen.UserFollowListScreen
 import com.lahsuak.apps.instagram.ui.screen.ViewPostScreen
+import com.lahsuak.apps.instagram.ui.screen.ViewStory
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
-import com.lahsuak.apps.instagram.ui.screen.viewmodel.ViewStory
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
 
 @Composable
@@ -35,7 +35,7 @@ fun AppNavHost(
         startDestination = startDestination
     ) {
         composable(NavigationItem.Home.route) {
-            InstaHomeScreen(homeViewModel = homeViewModel, navController = navController)
+            HomeScreen(homeViewModel = homeViewModel, navController = navController)
         }
         composable(NavigationItem.Search.route) {
             SearchScreen(homeViewModel = homeViewModel, navController = navController)
@@ -60,9 +60,8 @@ fun AppNavHost(
                 },
             )
         ) {
-            val arguments = requireNotNull(it.arguments)
-            val isFollower = arguments.getBoolean("isFollowing")
-            val userId = arguments.getString("userId") ?: MY_USER_ID
+            val isFollower = it.arguments?.getBoolean("isFollowing") ?: false
+            val userId = it.arguments?.getString("userId") ?: MY_USER_ID
             UserFollowListScreen(
                 homeViewModel = homeViewModel,
                 isFollowing = isFollower,
@@ -76,8 +75,7 @@ fun AppNavHost(
                     type = NavType.StringType
                 }
             )) {
-            val arguments = requireNotNull(it.arguments)
-            val userId = arguments.getString("userId") ?: "userid"
+            val userId = it.arguments?.getString("userId") ?: "userid"
             ChatScreen(userId, homeViewModel = homeViewModel, navController = navController)
         }
         composable(
@@ -87,8 +85,7 @@ fun AppNavHost(
                     type = NavType.StringType
                 }
             )) {
-            val arguments = requireNotNull(it.arguments)
-            val userId = arguments.getString("userid")
+            val userId = it.arguments?.getString("userid")
             ProfileScreen(
                 userId = userId ?: MY_USER_ID,
                 homeViewModel = homeViewModel,
@@ -101,25 +98,31 @@ fun AppNavHost(
                     type = NavType.StringType
                 }
             )) {
-            val arguments = requireNotNull(it.arguments)
-            val postId = arguments.getString("postId")
+            val postId = it.arguments?.getString("postId")
             postId?.let { id ->
-                ViewPostScreen(id,homeViewModel = homeViewModel, navController = navController)
+                ViewPostScreen(id, homeViewModel = homeViewModel, navController = navController)
             }
         }
-        composable("${NavigationItem.ViewStory.route}/{storyId}",
+        composable("${NavigationItem.ViewStory.route}/{storyId}/{userId}",
             arguments = listOf(
                 navArgument("storyId") {
                     type = NavType.StringType
+                }, navArgument("userId") {
+                    type = NavType.StringType
                 }
             )) {
-            val arguments = requireNotNull(it.arguments)
-            val postId = arguments.getString("storyId")
-            postId?.let { id ->
-                ViewStory(id,homeViewModel = homeViewModel, navController = navController)
+            val storyId = it.arguments?.getString("storyId")
+            val userId = it.arguments?.getString("userId")
+            if (storyId != null && userId != null) {
+                ViewStory(
+                    storyId,
+                    userId,
+                    homeViewModel = homeViewModel,
+                    navController = navController
+                )
             }
         }
-        composable(NavigationItem.Notification.route){
+        composable(NavigationItem.Notification.route) {
             NotificationScreen(homeViewModel = homeViewModel, navController = navController)
         }
     }

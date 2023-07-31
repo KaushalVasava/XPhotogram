@@ -3,6 +3,7 @@ package com.lahsuak.apps.instagram
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -49,6 +50,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    val homeViewModel: HomeViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -67,7 +70,6 @@ class MainActivity : ComponentActivity() {
                         .navigationBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val homeViewModel: HomeViewModel = viewModel()
                     val navController = rememberNavController()
                     Scaffold(
                         bottomBar = {
@@ -202,7 +204,7 @@ fun DefaultPreview() {
                 }
             ) {
 
-                AppNavHost(homeViewModel = homeViewModel, navController, Modifier.padding(it))
+                AppNavHost(homeViewModel, navController, Modifier.padding(it))
             }
         }
     }

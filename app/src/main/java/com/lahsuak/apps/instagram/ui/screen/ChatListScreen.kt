@@ -1,6 +1,7 @@
 package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,9 +32,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +44,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.lahsuak.apps.instagram.R
+import com.lahsuak.apps.instagram.models.ApiFailure
+import com.lahsuak.apps.instagram.models.BaseState
+import com.lahsuak.apps.instagram.models.User
+import com.lahsuak.apps.instagram.ui.components.CenterCircularProgressBar
+import com.lahsuak.apps.instagram.ui.components.CenterErrorText
 import com.lahsuak.apps.instagram.ui.components.CircularImage
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
@@ -53,21 +62,22 @@ fun ChatListScreen(
     homeViewModel: HomeViewModel,
     navController: NavController,
 ) {
-    val data by homeViewModel.users.collectAsState()
-    var query by remember {
-        mutableStateOf("")
-    }
-
-    Column {
+    val usersState by homeViewModel.users.collectAsState()
+    Column(Modifier.padding(horizontal = 16.dp)) {
+        var searchData by rememberSaveable {
+            mutableStateOf(emptyList<User>())
+        }
+        var query by rememberSaveable {
+            mutableStateOf("")
+        }
         TopAppBar(
             title = {
-                Text("Test", fontSize = 16.sp)
+                Text("Chats", fontSize = 16.sp)
             },
             actions = {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = "menu",
-                    modifier = Modifier.padding(8.dp)
                 )
             }, navigationIcon = {
                 Icon(
@@ -77,13 +87,13 @@ fun ChatListScreen(
                         .padding(8.dp)
                         .clickable {
                             navController.popBackStack()
-                        })
+                        }
+                )
             }
         )
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(55.dp)
                 .padding(horizontal = 8.dp),
             query = query,
             leadingIcon = {
@@ -97,35 +107,62 @@ fun ChatListScreen(
                     }
                 )
             },
-            onQueryChange = {
-                query = it
+            onQueryChange = { q ->
+                val d = searchData.filter {
+                    it.name.lowercase().contains(q.lowercase())
+                }
+                searchData = d
+                query = q
             },
             placeholder = {
                 Text(
-                    "Search name",
+                    stringResource(R.string.search_name),
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
             },
             onSearch = {},
             active = false,
-            onActiveChange = {}
+            onActiveChange = {
+            }
         ) {}
         Spacer(modifier = Modifier.height(8.dp))
-        LazyColumn(Modifier.padding(horizontal = 8.dp)) {
-            items(data.filterNot {
-                it.id == MY_USER_ID
-            }) {
-                UserChatItem(
-                    userName = it.name,
-                    imageUrl = it.profileImage,
-                    lastMsg = "Hi sdksjdsdsdskdsjdsdsdjsdsdsdsvyhufsdfygdsfsdgysfdtsgdesdghdfnfesfvbnsf",
-                    modifier = Modifier.clickable {
-                        navController.navigate(
-                            "${NavigationItem.Chat.route}/${it.id}"
+
+        when (val state = usersState) {
+            is BaseState.Failed -> {
+                when (state.error) {
+                    is ApiFailure.Unknown -> {
+                        CenterErrorText(msg = state.error.error)
+                    }
+                }
+            }
+
+            BaseState.Loading -> {
+                CenterCircularProgressBar()
+            }
+
+            is BaseState.Success -> {
+                LazyColumn(Modifier.padding(horizontal = 8.dp)) {
+                    if (searchData.isEmpty() || query.isEmpty()) {
+                        searchData = state.data
+                    } else {
+                        searchData.map { it.name.lowercase() }.contains(query.lowercase())
+                    }
+                    items(searchData.filterNot {
+                        it.id == MY_USER_ID
+                    }) {
+                        UserChatItem(
+                            userName = it.name,
+                            imageUrl = it.profileImage,
+                            lastMsg = "Hi sdksjdsdsdskdsjdsdsdjsdsdsdsvyhufsdfygdsfsdgysfdtsgdesdghdfnfesfvbnsf",
+                            modifier = Modifier.clickable {
+                                navController.navigate(
+                                    "${NavigationItem.Chat.route}/${it.id}"
+                                )
+                            }
                         )
                     }
-                )
+                }
             }
         }
     }
@@ -155,7 +192,8 @@ fun UserChatItem(
             Text(
                 lastMsg,
                 color = Color.Gray,
-                maxLines = 2,
+                maxLines = 1,
+                fontSize = 12.sp,
                 overflow = TextOverflow.Ellipsis
             )
         }

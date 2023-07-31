@@ -6,7 +6,11 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.TwoWayConverter
+import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
@@ -185,7 +189,7 @@ fun PostItem(
                 disableIcon = painterResource(id = R.drawable.ic_bookmark_border)
             )
         }
-        Text("$likes likes", Modifier.padding(horizontal = 16.dp))
+        Text("$likes likes", Modifier.animateContentSize().padding(horizontal = 16.dp))
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = post.caption,
@@ -195,7 +199,7 @@ fun PostItem(
                 .clickable {
                     isExpanded = !isExpanded
                 },
-            maxLines = if (isExpanded) 5 else 1,
+            maxLines = if (isExpanded) 5 else 2,
             overflow = TextOverflow.Ellipsis
         )
     }

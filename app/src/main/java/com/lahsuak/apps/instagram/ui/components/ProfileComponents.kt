@@ -129,7 +129,7 @@ fun StateItem(
 fun ProfileDescription(
     displayName: String,
     description: String,
-    url: String,
+    url: String?,
     followedBy: List<String>,
     otherCount: Int,
     modifier: Modifier = Modifier,
@@ -151,17 +151,19 @@ fun ProfileDescription(
             letterSpacing = letterSpacing,
             lineHeight = lineHeight
         )
-        Text(
-            text = url,
-            fontWeight = FontWeight.Normal,
-            color = LIGHT_BLUE,
-            letterSpacing = letterSpacing,
-            lineHeight = lineHeight,
-            fontSize = 14.sp,
-            modifier = Modifier.clickable {
-                openTab(context, url)
-            }
-        )
+        if (url != null) {
+            Text(
+                text = url,
+                fontWeight = FontWeight.Normal,
+                color = LIGHT_BLUE,
+                letterSpacing = letterSpacing,
+                lineHeight = lineHeight,
+                fontSize = 14.sp,
+                modifier = Modifier.clickable {
+                    openTab(context, url)
+                }
+            )
+        }
         if (followedBy.isNotEmpty()) {
             Text(text = buildAnnotatedString {
                 val boldStyle = SpanStyle(
@@ -297,7 +299,7 @@ fun HighlightSection(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .clickable {
-                        navController.navigate("${NavigationItem.ViewStory.route}/${it.id}")
+                        navController.navigate("${NavigationItem.ViewStory.route}/${it.id}/${it.userId}")
                     }
             ) {
                 CircularImage(
