@@ -15,7 +15,7 @@ You can contribute this project. Just Solve issue or update code and raise PR. I
 - Material3 SearchBar
 - Navigation Graph, Bottom Navigation Bar
 - Single Activity design pattern
-- Flow
+- Flow, Generic in Kotlin
 
 # Screenshots
 ![Screenshot_2023-07-31-18-40-00-716_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/599b2931-ce27-4ba3-a7ab-afd04a0f21af)
