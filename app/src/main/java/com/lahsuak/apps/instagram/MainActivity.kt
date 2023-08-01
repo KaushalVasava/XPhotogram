@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -162,11 +164,11 @@ internal fun SetupTransparentSystemUi(
     actualBackgroundColor: Color,
 ) {
     val minLuminanceForDarkIcons = .5f
-
-    SideEffect {
+    val useDarkIcons = !isSystemInDarkTheme()
+    DisposableEffect(systemUiController, useDarkIcons) {
         systemUiController.setStatusBarColor(
             color = Color.Transparent,
-            darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons
+            darkIcons = useDarkIcons,
         )
 
         systemUiController.setNavigationBarColor(
@@ -174,6 +176,7 @@ internal fun SetupTransparentSystemUi(
             darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons,
             navigationBarContrastEnforced = false
         )
+        onDispose {}
     }
 }
 
