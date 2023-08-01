@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -165,12 +166,12 @@ internal fun SetupTransparentSystemUi(
 
     SideEffect {
         systemUiController.setStatusBarColor(
-            color = Color.Transparent,
+            color = actualBackgroundColor,
             darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons
         )
 
         systemUiController.setNavigationBarColor(
-            color = Color.Transparent,
+            color = actualBackgroundColor,
             darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons,
             navigationBarContrastEnforced = false
         )
