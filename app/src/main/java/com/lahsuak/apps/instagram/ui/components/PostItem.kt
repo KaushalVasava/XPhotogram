@@ -184,7 +184,7 @@ fun PostItem(
             )
             Spacer(modifier = Modifier.weight(1f))
             ToggleIconButton(
-                enableTint = Color.Black,
+                enableTint = MaterialTheme.colorScheme.onBackground,
                 enableIcon = painterResource(id = R.drawable.ic_bookmark),
                 disableIcon = painterResource(id = R.drawable.ic_bookmark_border)
             )

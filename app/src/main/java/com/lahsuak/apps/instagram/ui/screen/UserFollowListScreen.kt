@@ -61,7 +61,7 @@ fun UserFollowListScreen(
         Column {
             TopAppBar(
                 title = {
-                    Text(if (isFollowing) "Following" else "Followers", fontSize = 16.sp)
+                    Text(if (isFollowing) "Following" else "Followers", fontSize = 18.sp)
                 },
                 navigationIcon = {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back",
