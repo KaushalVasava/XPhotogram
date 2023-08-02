@@ -26,7 +26,7 @@ See Commit message guidelines https://initialcommit.com/blog/git-commit-messages
 ![Screenshot_2023-07-31-18-40-22-775_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/87addb83-8d6d-4ee9-a5e6-5f2b064888f1)
 ![Screenshot_2023-07-31-18-40-08-854_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/a0699002-e3ad-40be-80a2-05eb7e379ae5)
 ![Screenshot_2023-07-31-19-04-01-501_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/3a4fb826-5bf0-48d2-b827-0ebcfc3e8648)
-![Screenshot_2023-07-31-19-04-04-314_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/1cc1f8f5-c2fe-4469-9b01-f984fad76b68)
+![c36219c9-eeea-4927-8324-2c71cfd0115f](https://github.com/KaushalVasava/Instagram/assets/49050597/294b0a6f-6e2a-4568-a0d0-4474f945e672)
 ![Screenshot_2023-07-31-18-40-34-453_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/baf58bae-7d30-476f-8327-a60c64fa4bdb)
 ![Screenshot_2023-07-31-19-04-09-408_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/716913b2-b8a4-4cef-a9b0-4f61014d71f5)
 
