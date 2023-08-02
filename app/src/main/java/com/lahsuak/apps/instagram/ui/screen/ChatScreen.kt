@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -285,7 +286,9 @@ fun ChatItem(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.LightGray)
+                    .background(
+                        Brush.horizontalGradient(listOf(Color.Green, Color.Cyan))
+                    )
                     .padding(4.dp)
                     .alpha(0.7f),
             ) {
