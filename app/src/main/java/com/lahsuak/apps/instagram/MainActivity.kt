@@ -6,8 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -93,8 +96,8 @@ class MainActivity : ComponentActivity() {
                         bottomBar = {
                             AnimatedVisibility(
                                 visible = showBottomBar,
-                                enter = fadeIn(),
-                                exit = fadeOut(),
+                                enter = fadeIn() + scaleIn(),
+                                exit = fadeOut() + scaleOut(),
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceEvenly,

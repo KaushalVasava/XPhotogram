@@ -41,6 +41,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -60,6 +62,7 @@ import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
 import com.lahsuak.apps.instagram.ui.theme.LIGHT_BLUE
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
 import com.lahsuak.apps.instagram.util.DemoData
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -289,8 +292,27 @@ fun ChatItem(
                     .background(
                         Brush.horizontalGradient(listOf(Color.Green, Color.Cyan))
                     )
+                    .drawBehind {
+                        repeat(Random.nextInt(2,4)) {
+                            drawCircle(
+                                Brush.radialGradient(colors = listOf(Color.Red, Color.Blue)),
+                                alpha = 0.06f,
+                                radius = Random
+                                    .nextInt(5, 100)
+                                    .toFloat(),
+                                center = Offset(
+                                    Random
+                                        .nextInt(0, size.minDimension.toInt())
+                                        .toFloat(),
+                                    Random
+                                        .nextInt(0, size.maxDimension.toInt())
+                                        .toFloat()
+                                )
+                            )
+                        }
+                    }
                     .padding(4.dp)
-                    .alpha(0.7f),
+                    .alpha(0.7f)
             ) {
                 Text(
                     message.msg,
@@ -330,63 +352,13 @@ fun ChatScreenPreview() {
             modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .padding(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                var text by rememberSaveable {
-                    mutableStateOf("")
-                }
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_camera),
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(LIGHT_BLUE)
-                        .padding(4.dp),
-                    tint = Color.White,
-                    contentDescription = "camera",
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                TextField(
-                    value = text,
-                    placeholder = {
-                        Text(
-                            stringResource(R.string.message_hint),
-                            color = Color.Gray,
-                        )
-                    },
-                    onValueChange = {
-                        text = it
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .clip(RoundedCornerShape(16.dp))
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_mic), "Mic",
-                    modifier = Modifier.padding(4.dp),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_image), "gallery",
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(4.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    Icons.Outlined.AddCircle, "Add",
-                    modifier = Modifier.padding(4.dp),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-            }
+            ChatItem(
+                DemoData.urls.first(), Message(
+                    msg = "Hello how are you?, What are you doing",
+                    "5:10pm",
+                    userId = MY_USER_ID
+                ), isLeft = false
+            )
         }
     }
 }

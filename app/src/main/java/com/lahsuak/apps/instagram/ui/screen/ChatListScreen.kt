@@ -84,7 +84,7 @@ fun ChatListScreen(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "back",
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(end = 8.dp)
                         .clickable {
                             navController.popBackStack()
                         }

@@ -102,9 +102,9 @@ fun ViewStory(
                     val user = homeViewModel.getUserById(stories[page].userId)
                     if (user != null) {
                         StoryItem(stories[page], user, {
-                             navController.navigate(
-                                 "${NavigationItem.Profile.route}/${user.id}"
-                             )
+                            navController.navigate(
+                                "${NavigationItem.Profile.route}/${user.id}"
+                            )
                         }) {
                             navController.popBackStack()
                         }
@@ -180,8 +180,12 @@ fun StoryItem(
         }
         AnimatedVisibility(
             visible = isTouched,
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter = fadeIn() + slideInVertically(initialOffsetY = {
+                it / 2
+            }),
+            exit = fadeOut() + slideOutVertically(targetOffsetY = {
+                it / 2
+            }),
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
