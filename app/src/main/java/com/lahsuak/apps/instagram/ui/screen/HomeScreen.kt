@@ -1,7 +1,6 @@
 package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,8 +17,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,7 +36,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -43,7 +43,6 @@ import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.ApiFailure
 import com.lahsuak.apps.instagram.models.BaseState
 import com.lahsuak.apps.instagram.ui.components.CenterCircularProgressBar
-import com.lahsuak.apps.instagram.ui.components.CenterErrorText
 import com.lahsuak.apps.instagram.ui.components.CircularImage
 import com.lahsuak.apps.instagram.ui.components.PostItem
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
@@ -51,8 +50,6 @@ import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
 import com.lahsuak.apps.instagram.ui.theme.LIGHT_BLUE
 import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
-
-private const val TAG = "TAG"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +69,13 @@ fun HomeScreen(
         is BaseState.Failed -> {
             when (state.error) {
                 is ApiFailure.Unknown -> {
-                    CenterErrorText(msg = state.error.error)
+                    Button(onClick = {
+                        homeViewModel.getUsers()
+                        homeViewModel.getPosts()
+                        homeViewModel.getStories()
+                    }) {
+                        Text("${state.error.error}\nRetry")
+                    }
                 }
             }
         }
@@ -98,24 +101,26 @@ fun HomeScreen(
                         )
                     }, actions = {
                         Row {
-                            Icon(
-                                painterResource(id = R.drawable.ic_favorite_border),
-                                contentDescription = null,
-                                Modifier
-                                    .padding(8.dp)
-                                    .clickable {
-                                        navController.navigate(NavigationItem.Notification.route)
-                                    }
-                            )
-                            Icon(
-                                painterResource(id = R.drawable.ic_chat),
-                                contentDescription = null,
-                                Modifier
-                                    .padding(8.dp)
-                                    .clickable {
-                                        navController.navigate(NavigationItem.ChatList.route)
-                                    }
-                            )
+                            IconButton(onClick = {
+                                navController.navigate(NavigationItem.Notification.route)
+
+                            }) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_favorite_border),
+                                    contentDescription = null,
+                                    Modifier.padding(8.dp)
+                                )
+                            }
+                            IconButton(onClick = {
+                                navController.navigate(NavigationItem.ChatList.route)
+
+                            }) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_chat),
+                                    contentDescription = null,
+                                    Modifier.padding(8.dp)
+                                )
+                            }
                         }
                     })
                     LazyColumn {

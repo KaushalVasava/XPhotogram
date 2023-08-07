@@ -11,11 +11,14 @@ import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.screen.ChatListScreen
 import com.lahsuak.apps.instagram.ui.screen.ChatScreen
 import com.lahsuak.apps.instagram.ui.screen.CreatePostScreen
+import com.lahsuak.apps.instagram.ui.screen.CreateTweetScreen
 import com.lahsuak.apps.instagram.ui.screen.HomeScreen
 import com.lahsuak.apps.instagram.ui.screen.NotificationScreen
 import com.lahsuak.apps.instagram.ui.screen.ProfileScreen
 import com.lahsuak.apps.instagram.ui.screen.ReelsScreen
 import com.lahsuak.apps.instagram.ui.screen.SearchScreen
+import com.lahsuak.apps.instagram.ui.screen.TweetListScreen
+import com.lahsuak.apps.instagram.ui.screen.TweetScreen
 import com.lahsuak.apps.instagram.ui.screen.UserFollowListScreen
 import com.lahsuak.apps.instagram.ui.screen.ViewPostScreen
 import com.lahsuak.apps.instagram.ui.screen.ViewStory
@@ -42,6 +45,25 @@ fun AppNavHost(
         }
         composable(NavigationItem.CreatePost.route) {
             CreatePostScreen()
+        }
+        composable(NavigationItem.TweetList.route) {
+            TweetListScreen(homeViewModel, navController)
+        }
+        composable(
+            "${NavigationItem.Tweet.route}/{tweetId}",
+            arguments = listOf(
+                navArgument("tweetId") {
+                    type = NavType.StringType
+                },
+            )
+        ) {
+            val tweetId = it.arguments?.getString("tweetId")
+            tweetId?.let { id ->
+                TweetScreen(id, homeViewModel, navController)
+            }
+        }
+        composable(NavigationItem.CreateTweet.route) {
+            CreateTweetScreen(homeViewModel = homeViewModel, navController = navController)
         }
         composable(NavigationItem.Reels.route) {
             ReelsScreen(homeViewModel = homeViewModel, navController)
@@ -76,7 +98,7 @@ fun AppNavHost(
                 }
             )) {
             val userId = it.arguments?.getString("userId") ?: "userid"
-            ChatScreen(userId, homeViewModel = homeViewModel , navController = navController)
+            ChatScreen(userId, homeViewModel = homeViewModel, navController = navController)
         }
         composable(
             "${NavigationItem.Profile.route}/{userid}",

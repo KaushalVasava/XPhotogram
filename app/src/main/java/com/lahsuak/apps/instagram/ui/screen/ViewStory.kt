@@ -2,20 +2,11 @@ package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,18 +15,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -50,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,6 +52,7 @@ import com.lahsuak.apps.instagram.models.User
 import com.lahsuak.apps.instagram.ui.components.CenterCircularProgressBar
 import com.lahsuak.apps.instagram.ui.components.CenterErrorText
 import com.lahsuak.apps.instagram.ui.components.CircularImage
+import com.lahsuak.apps.instagram.ui.components.ToggleIconButton
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
 import com.lahsuak.apps.instagram.ui.theme.JetPackComposeBasicTheme
@@ -167,15 +156,15 @@ fun StoryItem(
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = null,
-                    Modifier
-                        .padding(8.dp)
-                        .clickable {
-                            onMoreClick()
-                        }
-                )
+                IconButton(onClick = { onMoreClick() }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        Modifier
+                            .padding(8.dp)
+
+                    )
+                }
             }
         }
         AnimatedVisibility(
@@ -210,63 +199,75 @@ fun StoryItem(
                     },
                     modifier = Modifier.clip(RoundedCornerShape(16.dp))
                 )
-                IconToggleButton(
-                    checked = isFavorite,
+                ToggleIconButton(
+                    enableIcon =   rememberVectorPainter(image = Icons.Filled.Favorite),
+                    disableIcon =   rememberVectorPainter(image = Icons.Filled.FavoriteBorder),
+                    initialState = isFavorite,
                     onCheckedChange = {
                         if (isFavorite)
                             likes--
                         else
                             likes++
                         isFavorite = !isFavorite
-                    },
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .clip(CircleShape)
-                        .background(Color.LightGray)
-                ) {
-                    val transition = updateTransition(isFavorite, label = "favorite")
-                    val tint by animateColorAsState(
-                        targetValue = if (isFavorite) Color.Red else Color.Black,
-                        label = "tint"
-                    )
-                    // om below line we are specifying transition
-                    val size by transition.animateDp(
-                        transitionSpec = {
-                            // on below line we are specifying transition
-                            if (false isTransitioningTo true) {
-                                // on below line we are specifying key frames
-                                keyframes {
-                                    // on below line we are specifying animation duration
-                                    durationMillis = 1000
-                                    // on below line we are specifying animations.
-                                    30.dp at 0 with LinearOutSlowInEasing // for 0-15 ms
-                                    35.dp at 15 with FastOutLinearInEasing // for 15-75 ms
-                                    40.dp at 75 // ms
-                                    35.dp at 150 // ms
-                                }
-                            } else {
-                                spring(stiffness = Spring.StiffnessVeryLow)
-                            }
-                        },
-                        label = "Size"
-                    ) {
-                        if (it)
-                            30.dp
-                        else
-                            30.dp
                     }
-                    Icon(
-                        tint = tint,
-                        painter = if (isFavorite) {
-                            rememberVectorPainter(image = Icons.Filled.Favorite)
-                        } else {
-                            rememberVectorPainter(image = Icons.Filled.FavoriteBorder)
-                        },
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(size)
-                    )
-                }
+                )
+//                IconToggleButton(
+//                    checked = isFavorite,
+//                    onCheckedChange = {
+//                        if (isFavorite)
+//                            likes--
+//                        else
+//                            likes++
+//                        isFavorite = !isFavorite
+//                    },
+//                    modifier = Modifier
+//                        .padding(start = 8.dp)
+//                        .clip(CircleShape)
+//                        .background(Color.LightGray)
+//                ) {
+//                    val transition = updateTransition(isFavorite, label = "favorite")
+//                    val tint by animateColorAsState(
+//                        targetValue = if (isFavorite) Color.Red else Color.Black,
+//                        label = "tint"
+//                    )
+//                    // om below line we are specifying transition
+//                    val size by transition.animateDp(
+//                        transitionSpec = {
+//                            // on below line we are specifying transition
+//                            if (false isTransitioningTo true) {
+//                                // on below line we are specifying key frames
+//                                keyframes {
+//                                    // on below line we are specifying animation duration
+//                                    durationMillis = 1000
+//                                    // on below line we are specifying animations.
+//                                    30.dp at 0 with LinearOutSlowInEasing // for 0-15 ms
+//                                    35.dp at 15 with FastOutLinearInEasing // for 15-75 ms
+//                                    40.dp at 75 // ms
+//                                    35.dp at 150 // ms
+//                                }
+//                            } else {
+//                                spring(stiffness = Spring.StiffnessVeryLow)
+//                            }
+//                        },
+//                        label = "Size"
+//                    ) {
+//                        if (it)
+//                            30.dp
+//                        else
+//                            30.dp
+//                    }
+//                    Icon(
+//                        tint = tint,
+//                        painter = if (isFavorite) {
+//                            rememberVectorPainter(image = Icons.Filled.Favorite)
+//                        } else {
+//                            rememberVectorPainter(image = Icons.Filled.FavoriteBorder)
+//                        },
+//                        contentDescription = null,
+//                        modifier = Modifier
+//                            .size(size)
+//                    )
+//                }
             }
         }
     }
