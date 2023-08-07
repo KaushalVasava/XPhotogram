@@ -1,6 +1,7 @@
 package com.lahsuak.apps.instagram.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -14,6 +15,11 @@ import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -82,9 +88,11 @@ fun PostItem(
                         onImageClick()
                     }
             )
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(vertical = 4.dp)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 4.dp)
+            ) {
                 Text(user.name)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -189,7 +197,17 @@ fun PostItem(
                 disableIcon = painterResource(id = R.drawable.ic_bookmark_border)
             )
         }
-        Text("$likes likes", Modifier.animateContentSize().padding(horizontal = 16.dp))
+        AnimatedContent(
+            targetState = likes,
+            transitionSpec = { fadeIn() + scaleIn() togetherWith fadeOut() + scaleOut() },
+            label = "likes"
+        ) {
+            Text(
+                "$it likes",
+                Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = post.caption,

@@ -215,7 +215,6 @@ fun ReelsScreen(homeViewModel: HomeViewModel, navController: NavController) {
                 }
             }
         }
-        // Our page content
     }
 }
 

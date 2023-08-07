@@ -1,6 +1,10 @@
 package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -42,7 +45,6 @@ import com.lahsuak.apps.instagram.R
 import com.lahsuak.apps.instagram.models.ApiFailure
 import com.lahsuak.apps.instagram.models.BaseState
 import com.lahsuak.apps.instagram.models.Post
-import com.lahsuak.apps.instagram.models.User
 import com.lahsuak.apps.instagram.ui.components.CenterCircularProgressBar
 import com.lahsuak.apps.instagram.ui.components.CenterErrorText
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
@@ -72,7 +74,8 @@ fun SearchScreen(
                 var query by rememberSaveable {
                     mutableStateOf("")
                 }
-                LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(125.dp)) {
+                LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(125.dp),
+                    modifier = Modifier.animateContentSize(animationSpec = tween(2000))) {
                     item(span = StaggeredGridItemSpan.FullLine) {
                         SearchBar(
                             modifier = Modifier
