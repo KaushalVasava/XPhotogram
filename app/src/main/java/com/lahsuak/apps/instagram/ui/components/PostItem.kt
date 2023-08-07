@@ -2,19 +2,7 @@ package com.lahsuak.apps.instagram.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.TwoWayConverter
-import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.animateValueAsState
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -28,7 +16,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -36,7 +23,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -104,15 +91,15 @@ fun PostItem(
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = null,
-                Modifier
-                    .padding(8.dp)
-                    .clickable {
-                        onMoreClick()
-                    }
-            )
+            IconButton(onClick = {
+                onMoreClick()
+            }) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = null,
+                    Modifier.padding(8.dp)
+                )
+            }
         }
         PostImage(imageUrl = post.postImage)
         Spacer(modifier = Modifier.height(4.dp))
@@ -122,80 +109,45 @@ fun PostItem(
             modifier = Modifier.padding(start = 8.dp)
         ) {
             var isFavorite by remember { mutableStateOf(false) }
-
-            IconToggleButton(
-                checked = isFavorite,
-                onCheckedChange = {
-                    if (isFavorite)
-                        likes--
-                    else
-                        likes++
-                    isFavorite = !isFavorite
-                },
-                modifier = Modifier.padding(vertical = 8.dp)
+            var isBookmarked by remember { mutableStateOf(false) }
+            ToggleIconButton(
+                enableTint = Color.Red,
+                enableIcon = rememberVectorPainter(image = Icons.Filled.Favorite),
+                disableIcon = rememberVectorPainter(image = Icons.Filled.FavoriteBorder),
+                initialState = isFavorite
             ) {
-                val transition = updateTransition(isFavorite, label = "favorite")
-                val tint by animateColorAsState(
-                    targetValue = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onBackground,
-                    label = "tint",
-                )
-                // om below line we are specifying transition
-                val size by transition.animateDp(
-                    transitionSpec = {
-                        // on below line we are specifying transition
-                        if (false isTransitioningTo true) {
-                            // on below line we are specifying key frames
-                            keyframes {
-                                // on below line we are specifying animation duration
-                                durationMillis = 1000
-                                // on below line we are specifying animations.
-                                30.dp at 0 with LinearOutSlowInEasing // for 0-15 ms
-                                35.dp at 15 with FastOutLinearInEasing // for 15-75 ms
-                                40.dp at 75 // ms
-                                35.dp at 150 // ms
-                            }
-                        } else {
-                            spring(stiffness = Spring.StiffnessVeryLow)
-                        }
-                    },
-                    label = "Size"
-                ) {
-                    if (it)
-                        30.dp
-                    else
-                        30.dp
-                }
+                if (it)
+                    likes++
+                else
+                    likes--
+                isFavorite = !isFavorite
+            }
+            IconButton(onClick = {
+                //no-op
+            }) {
                 Icon(
-                    tint = tint,
-                    painter = if (isFavorite) {
-                        rememberVectorPainter(image = Icons.Filled.Favorite)
-                    } else {
-                        rememberVectorPainter(image = Icons.Filled.FavoriteBorder)
-                    },
+                    painterResource(id = R.drawable.ic_comment),
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(size)
+                    Modifier.padding(vertical = 8.dp)
                 )
             }
-            Icon(
-                painterResource(id = R.drawable.ic_comment),
-                contentDescription = null,
-                Modifier.padding(vertical = 8.dp)
-            )
-            Icon(
-                Icons.Default.Send,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(
-                        start = 12.dp, top = 8.dp, bottom = 8.dp
-                    )
-            )
+            IconButton(onClick = { /*no-op*/ }) {
+                Icon(
+                    Icons.Default.Send,
+                    contentDescription = null,
+                    modifier = Modifier.padding( vertical = 8.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.weight(1f))
             ToggleIconButton(
                 enableTint = MaterialTheme.colorScheme.onBackground,
                 enableIcon = painterResource(id = R.drawable.ic_bookmark),
-                disableIcon = painterResource(id = R.drawable.ic_bookmark_border)
-            )
+                disableIcon = painterResource(id = R.drawable.ic_bookmark_border),
+                initialState = isBookmarked
+            ) {
+                isBookmarked = !isBookmarked
+            }
         }
         AnimatedContent(
             targetState = likes,

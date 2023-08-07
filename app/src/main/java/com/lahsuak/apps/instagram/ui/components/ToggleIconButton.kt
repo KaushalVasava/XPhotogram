@@ -20,9 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -38,21 +35,18 @@ fun ToggleIconButton(
     disableTint: Color = MaterialTheme.colorScheme.onBackground,
     enableIcon: Painter,
     disableIcon: Painter,
-    initialState: Boolean = false
+    initialState: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
 ) {
-    var isFavorite by remember { mutableStateOf(initialState) }
     IconToggleButton(
-        checked = isFavorite,
-        onCheckedChange = {
-            isFavorite = !isFavorite
-        },
-        modifier = modifier,
+        checked = initialState,
+        onCheckedChange = onCheckedChange,
+        modifier = modifier
     ) {
-        val transition = updateTransition(isFavorite, label = "favorite")
+        val transition = updateTransition(initialState, label = "favorite")
         val tint by animateColorAsState(
-            targetValue = if (isFavorite) enableTint else disableTint,
+            targetValue = if (initialState) enableTint else disableTint,
             label = "tint",
-//            animationSpec = tween(2000, easing = FastOutSlowInEasing)
         )
 
         // om below line we are specifying transition
@@ -83,7 +77,7 @@ fun ToggleIconButton(
         }
         Icon(
             tint = tint,
-            painter = if (isFavorite) {
+            painter = if (initialState) {
                 enableIcon
             } else {
                 disableIcon
@@ -93,7 +87,6 @@ fun ToggleIconButton(
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -110,7 +103,7 @@ fun ButtonPreview() {
                 disableIcon =
                 rememberVectorPainter(image = Icons.Default.FavoriteBorder),
                 initialState = false
-            )
+            ){}
         }
     }
 }

@@ -1,20 +1,15 @@
 package com.lahsuak.apps.instagram
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,7 +29,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -87,7 +81,7 @@ class MainActivity : ComponentActivity() {
                         NavigationItem.Home.route,
                         NavigationItem.Search.route,
                         NavigationItem.CreatePost.route,
-                        NavigationItem.Reels.route,
+                        NavigationItem.TweetList.route,
                         "${NavigationItem.Profile.route}/{userid}"
                     )
                     val showBottomBar = navController
@@ -124,9 +118,14 @@ class MainActivity : ComponentActivity() {
                                             ),
                                             BottomNavItem(
                                                 NavigationItem.Reels.route,
-                                                Screen.REELS.name,
-                                                icon = painterResource(id = R.drawable.ic_video)
+                                                Screen.TWEET_LIST.name,
+                                                icon = painterResource(id = R.drawable.ic_retweet)
                                             ),
+//                                            BottomNavItem(
+//                                                NavigationItem.Reels.route,
+//                                                Screen.REELS.name,
+//                                                icon = painterResource(id = R.drawable.ic_video)
+//                                            ),
                                             BottomNavItem(
                                                 NavigationItem.Profile.route,
                                                 Screen.PROFILE.name,

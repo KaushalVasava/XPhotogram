@@ -4,7 +4,6 @@ package com.lahsuak.apps.instagram.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
@@ -77,20 +77,22 @@ fun ProfileScreen(
                 title = { Text(user.id, fontSize = 18.sp) },
                 actions = {
                     Row {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = "notification",
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .clickable {
-                                    navController.navigate(NavigationItem.Notification.route)
-                                }
-                        )
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "menu",
-                            modifier = Modifier.padding(8.dp)
-                        )
+                        IconButton(onClick = {
+                            navController.navigate(NavigationItem.Notification.route)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
+                                contentDescription = "notification",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        IconButton(onClick = { /* no-op */ }) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "menu",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                     }
                 }
             )
@@ -106,7 +108,7 @@ fun ProfileScreen(
                 displayName = user.name,
                 description = user.bio,
                 url = user.links.firstOrNull(),
-                followedBy = listOf("Kaushal, Mar"),
+                followedBy = listOf("Kaushal, Jerry"),
                 otherCount = 34,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,8 +148,7 @@ fun ProfileScreen(
                 )
             }
         }
-    }
-    else {
+    } else {
         CenterCircularProgressBar()
     }
 }
