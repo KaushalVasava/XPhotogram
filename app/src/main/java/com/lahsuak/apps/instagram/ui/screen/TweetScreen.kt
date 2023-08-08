@@ -125,7 +125,7 @@ fun TweetScreen(tweetId: String, homeViewModel: HomeViewModel, navController: Na
                         }
                     )
                     Row(
-                        Modifier.fillMaxWidth(1f),
+                        Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -215,8 +215,8 @@ fun TweetScreen(tweetId: String, homeViewModel: HomeViewModel, navController: Na
                     LazyColumn(modifier = Modifier.drawBehind {
                         drawLine(
                             color = Color.Gray,
-                            start = Offset(60f, 0f),
-                            end = Offset(this.size.width / 10, this.size.height)
+                            start = Offset(70f, 0f),
+                            end = Offset(70f, this.size.height)
                         )
                     }) {
                         items(tweets) {

@@ -91,7 +91,7 @@ fun TweetItem(
                 )
             }
             Spacer(Modifier.height(8.dp))
-            Text(tweet.description, fontSize = 16.sp, fontWeight = FontWeight.Thin)
+            Text(tweet.description, fontSize = 16.sp, fontWeight = FontWeight.Light)
             Spacer(Modifier.height(8.dp))
             TweetActionRow(isLiked, isRetweeted, isBookmarked,
                 likes,
