@@ -19,6 +19,19 @@ object DemoData {
         "https://cdn.pixabay.com/photo/2023/05/28/03/34/flowers-8022731_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/07/14/10/50/flower-8126748_1280.jpg",
     )
+    val tweets = listOf(
+        "I'm so happy, I build app using Jetpack compose, You can build complex ui with less code and you make it fun using animations",
+        "UI elements are hierarchical, with elements contained in other elements. In Compose, you build a UI hierarchy by calling composable functions from other composable functions.",
+        "Lists and animations are everywhere in apps. In this lesson, you will learn how Compose makes it easy to create lists and fun to add animations",
+        "The Navigation component provides support for Jetpack Compose applications. You can navigate between composable while taking advantage of the Navigation component’s infrastructure and features.",
+        "Jetpack compose for UI development\n" +
+                "Kotlin for programming\n" +
+                "MVVM architecture\n" +
+                "Coil library for dynamic Image loading\n" +
+                "Retrofit for REST API data consuming\n" +
+                "Jetpack compose Navigation\n" +
+                "Lazy list, Card, Other composable functions"
+    )
     val demoPost = Post(
         id = "123451",
         userId = "12340",

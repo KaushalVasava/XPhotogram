@@ -23,9 +23,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -148,23 +150,26 @@ fun ChatScreen(
                     },
                     actions = {
                         Row {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = "menu",
-                                modifier = Modifier.padding(8.dp)
-                            )
+                            IconButton(onClick = { /* no-op*/ }) {
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = "menu",
+                                    modifier = Modifier.padding(8.dp)
+                                )
+                            }
                         }
                     }, navigationIcon = {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back",
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .clickable {
-                                    navController.popBackStack()
-                                })
+                        IconButton(onClick = {
+                            navController.popBackStack()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack, contentDescription = "back"
+                            )
+                        }
                     }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                LazyColumn {
+                LazyColumn(Modifier.padding(horizontal = 8.dp)) {
                     items(chat.msgs) {
                         if (it.userId == myUserId) {
                             ChatItem(chat.senderImage, it, true)
@@ -180,26 +185,27 @@ fun ChatScreen(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = 16.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .align(Alignment.BottomCenter),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var text by rememberSaveable {
                     mutableStateOf("")
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_camera),
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(LIGHT_BLUE)
-                        .padding(4.dp),
-                    tint = Color.White,
-                    contentDescription = "Camera",
-                )
-                Spacer(modifier = Modifier.width(4.dp))
+                IconButton(onClick = { /* no-op */ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_camera),
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(LIGHT_BLUE)
+                            .padding(4.dp),
+                        tint = Color.White,
+                        contentDescription = "Camera",
+                    )
+                }
                 TextField(
                     value = text,
                     placeholder = {
@@ -211,33 +217,24 @@ fun ChatScreen(
                     onValueChange = {
                         text = it
                     },
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
+                    modifier = Modifier.weight(1f)
                         .clip(RoundedCornerShape(16.dp))
                 )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_mic), "Mic",
-                    modifier = Modifier.padding(4.dp),
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_image), "Gallery",
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .clickable {
-                            navController.navigate(NavigationItem.CreatePost.route)
-                        }
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    Icons.Outlined.AddCircle, "Add",
-                    modifier = Modifier.padding(4.dp),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+                IconButton(onClick = {
+                    navController.navigate(NavigationItem.CreatePost.route)
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_image), "Gallery",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
+                IconButton(onClick = { /* no-op */ }) {
+                    Icon(
+                        Icons.Outlined.Send, "Send",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
             }
         }
     }
@@ -293,7 +290,7 @@ fun ChatItem(
                         Brush.horizontalGradient(listOf(Color.Green, Color.Cyan))
                     )
                     .drawBehind {
-                        repeat(Random.nextInt(2,4)) {
+                        repeat(Random.nextInt(2, 4)) {
                             drawCircle(
                                 Brush.radialGradient(colors = listOf(Color.Red, Color.Blue)),
                                 alpha = 0.06f,

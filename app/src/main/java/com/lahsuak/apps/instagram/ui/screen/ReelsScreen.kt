@@ -33,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,7 +68,7 @@ import com.lahsuak.apps.instagram.util.AppConstants.MY_USER_ID
 @Composable
 fun ReelsScreen(homeViewModel: HomeViewModel, navController: NavController) {
     val storyState by homeViewModel.stories.collectAsState()
-    var pageCount by remember{
+    var pageCount by remember {
         mutableIntStateOf(1)
     }
     val pagerState = rememberPagerState(pageCount = {
@@ -168,15 +169,26 @@ fun ReelsScreen(homeViewModel: HomeViewModel, navController: NavController) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    val story = stories[page]
+                                    var isFavorite by remember { mutableStateOf(false) }
+                                    var likes by remember { mutableIntStateOf(story.likeCount) }
+
                                     ToggleIconButton(
                                         enableIcon =
                                         rememberVectorPainter(image = Icons.Default.Favorite),
                                         disableIcon =
                                         rememberVectorPainter(image = Icons.Default.FavoriteBorder),
-                                        disableTint = Color.White
-                                    )
+                                        disableTint = Color.White,
+                                        initialState = isFavorite
+                                    ) {
+                                        if (it)
+                                            likes++
+                                        else
+                                            likes--
+                                        isFavorite = it
+                                    }
                                     Text(
-                                        stories[page].likeCount.toString(),
+                                        likes.toString(),
                                         maxLines = 1,
                                         color = Color.White,
                                         textAlign = TextAlign.Center
@@ -204,7 +216,7 @@ fun ReelsScreen(homeViewModel: HomeViewModel, navController: NavController) {
                         }
 
                         Text(
-                            text = stories[page].name?:"Something new",
+                            text = stories[page].name ?: "Something new",
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
                             fontSize = 12.sp,

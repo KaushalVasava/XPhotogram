@@ -12,6 +12,9 @@ enum class Screen {
     NOTIFICATION,
     VIEW_POST,
     VIEW_STORY,
+    TWEET_LIST,
+    TWEET,
+    CREATE_TWEET
 }
 
 sealed class NavigationItem(val route: String) {
@@ -26,4 +29,7 @@ sealed class NavigationItem(val route: String) {
     object Notification : NavigationItem(Screen.NOTIFICATION.name)
     object ViewPost : NavigationItem(Screen.VIEW_POST.name)
     object ViewStory : NavigationItem(Screen.VIEW_STORY.name)
+    object TweetList : NavigationItem(Screen.TWEET_LIST.name)
+    object Tweet : NavigationItem(Screen.TWEET.name)
+    object CreateTweet : NavigationItem(Screen.CREATE_TWEET.name)
 }
