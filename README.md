@@ -20,7 +20,7 @@ See Commit message guidelines https://initialcommit.com/blog/git-commit-messages
 - Error handling using proper state
 
 # Screenshots
-![Screenshot 2023-08-08 111624](https://github.com/KaushalVasava/Instagram/assets/49050597/5e9bbe57-6c99-4555-ac68-39d8161c5d41)
+![Screenshot 2023-08-08 111624](https://github.com/KaushalVasava/Instagram/assets/49050597/3dae51f4-29e5-4fc5-aacf-b80ce091e380)
 ![Screenshot_2023-07-31-19-03-52-822_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/1e920280-f539-4e50-a8c5-50e4eb874b21)
 ![Screenshot_2023-07-31-18-40-59-173_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/a472f44c-1345-4234-a684-39d3d6ea4e32)
 ![Screenshot 2023-08-08 111552](https://github.com/KaushalVasava/Instagram/assets/49050597/1d129b83-3d19-40cb-ad59-fe9638bc5eed)
