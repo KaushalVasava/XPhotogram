@@ -200,8 +200,8 @@ fun StoryItem(
                     modifier = Modifier.clip(RoundedCornerShape(16.dp))
                 )
                 ToggleIconButton(
-                    enableIcon =   rememberVectorPainter(image = Icons.Filled.Favorite),
-                    disableIcon =   rememberVectorPainter(image = Icons.Filled.FavoriteBorder),
+                    enableIcon = rememberVectorPainter(image = Icons.Filled.Favorite),
+                    disableIcon = rememberVectorPainter(image = Icons.Filled.FavoriteBorder),
                     initialState = isFavorite,
                     onCheckedChange = {
                         if (isFavorite)

@@ -51,7 +51,10 @@ fun UserFollowListScreen(
     isFollowing: Boolean,
     userId: String,
 ) {
-    val user = homeViewModel.getUserById(userId)
+    val userState by remember {
+        mutableStateOf(homeViewModel.getUserById(userId))
+    }
+    val user = userState
     if (user != null) {
         val users = if (isFollowing) {
             homeViewModel.getFollowings(user)

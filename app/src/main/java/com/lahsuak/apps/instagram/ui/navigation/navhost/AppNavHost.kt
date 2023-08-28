@@ -1,6 +1,10 @@
-package com.lahsuak.apps.instagram.ui.navhost
+package com.lahsuak.apps.instagram.ui.navigation.navhost
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,6 +21,7 @@ import com.lahsuak.apps.instagram.ui.screen.NotificationScreen
 import com.lahsuak.apps.instagram.ui.screen.ProfileScreen
 import com.lahsuak.apps.instagram.ui.screen.ReelsScreen
 import com.lahsuak.apps.instagram.ui.screen.SearchScreen
+import com.lahsuak.apps.instagram.ui.screen.SplashScreen
 import com.lahsuak.apps.instagram.ui.screen.TweetListScreen
 import com.lahsuak.apps.instagram.ui.screen.TweetScreen
 import com.lahsuak.apps.instagram.ui.screen.UserFollowListScreen
@@ -30,13 +35,25 @@ fun AppNavHost(
     homeViewModel: HomeViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = NavigationItem.Home.route,
 ) {
+    var isSplashScreenFinished by rememberSaveable {
+        mutableStateOf(false)
+    }
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = startDestination
+        startDestination = if(isSplashScreenFinished){
+            NavigationItem.Home.route
+        } else {
+            NavigationItem.Splash.route
+        }
     ) {
+        composable(NavigationItem.Splash.route){
+            SplashScreen {
+                navController.navigate(NavigationItem.Home.route)
+                isSplashScreenFinished = true
+            }
+        }
         composable(NavigationItem.Home.route) {
             HomeScreen(homeViewModel = homeViewModel, navController = navController)
         }
