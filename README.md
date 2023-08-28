@@ -36,11 +36,12 @@ uak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/8
 ![Screenshot 2023-08-08 111716](https://github.com/KaushalVasava/Instagram/assets/49050597/1b3ac9bc-6da5-4f9c-a826-49e1e584dbbb)
 ![Screenshot 2023-08-08 111700](https://github.com/KaushalVasava/Instagram/assets/49050597/19f75480-b863-4f31-adf4-61d86f717f6f)
 ![Screenshot_2023-07-31-18-40-34-453_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/baf58bae-7d30-476f-8327-a60c64fa4bdb)
-![Screenshot_2023-07-31-19-04-09-408_com lahsuak apps instagram](https://github.com/KaushalVasava/Instagram/assets/49050597/716913b2-b8a4-4cef-a9b0-4f61014d71f5)
 
 # Video
 
-https://github.com/KaushalVasava/Instagram/assets/49050597/9a3714f3-7899-47c6-943b-39ba98db0cc5
+https://github.com/KaushalVasava/Instagram/assets/49050597/7b98a763-39fd-49e9-a893-6944c071069d
+
+
 
 # Contribution
 
