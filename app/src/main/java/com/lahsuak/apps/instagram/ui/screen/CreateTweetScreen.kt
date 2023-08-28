@@ -57,7 +57,9 @@ fun CreateTweetScreen(homeViewModel: HomeViewModel, navController: NavController
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                homeViewModel.updateTweet(tweet = Tweet(description = text, userId = user.id))
+                homeViewModel.updateTweet(
+                    tweet = Tweet(description = text, userId = user.id)
+                )
                 navController.popBackStack()
             }) {
                 Icon(Icons.Default.Done, contentDescription = "Add")

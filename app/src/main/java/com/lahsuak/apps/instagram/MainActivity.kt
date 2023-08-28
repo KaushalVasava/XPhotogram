@@ -1,6 +1,7 @@
 package com.lahsuak.apps.instagram
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -29,6 +30,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -46,7 +52,7 @@ import com.lahsuak.apps.instagram.ui.components.BottomIcon
 import com.lahsuak.apps.instagram.ui.components.BottomNavItem
 import com.lahsuak.apps.instagram.ui.components.BottomNavigationBar
 import com.lahsuak.apps.instagram.ui.components.CircularImage
-import com.lahsuak.apps.instagram.ui.navhost.AppNavHost
+import com.lahsuak.apps.instagram.ui.navigation.navhost.AppNavHost
 import com.lahsuak.apps.instagram.ui.navigation.NavigationItem
 import com.lahsuak.apps.instagram.ui.navigation.Screen
 import com.lahsuak.apps.instagram.ui.screen.viewmodel.HomeViewModel
@@ -121,11 +127,6 @@ class MainActivity : ComponentActivity() {
                                                 Screen.TWEET_LIST.name,
                                                 icon = painterResource(id = R.drawable.ic_retweet)
                                             ),
-//                                            BottomNavItem(
-//                                                NavigationItem.Reels.route,
-//                                                Screen.REELS.name,
-//                                                icon = painterResource(id = R.drawable.ic_video)
-//                                            ),
                                             BottomNavItem(
                                                 NavigationItem.Profile.route,
                                                 Screen.PROFILE.name,

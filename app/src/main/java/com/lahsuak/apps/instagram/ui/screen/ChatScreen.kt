@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,6 +75,9 @@ fun ChatScreen(
     var isProgress by remember {
         mutableStateOf(false)
     }
+    val userState by remember {
+        mutableStateOf(homeViewModel.getUserById(userId))
+    }
     if (isProgress) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -84,9 +86,10 @@ fun ChatScreen(
             CircularProgressIndicator()
         }
     }
-    val user = homeViewModel.getUserById(userId)
+
     val myUserId = MY_USER_ID
     isProgress = false
+    val user = userState
     if (user != null) {
         val chat = Chat(
             senderImage = user.profileImage,
@@ -217,7 +220,8 @@ fun ChatScreen(
                     onValueChange = {
                         text = it
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .clip(RoundedCornerShape(16.dp))
                 )
                 IconButton(onClick = {

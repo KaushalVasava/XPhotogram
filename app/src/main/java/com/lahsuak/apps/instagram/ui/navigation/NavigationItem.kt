@@ -1,6 +1,7 @@
 package com.lahsuak.apps.instagram.ui.navigation
 
 enum class Screen {
+    SPLASH,
     HOME,
     SEARCH,
     CREATE_POST,
@@ -18,6 +19,7 @@ enum class Screen {
 }
 
 sealed class NavigationItem(val route: String) {
+    object Splash : NavigationItem(Screen.SPLASH.name)
     object Home : NavigationItem(Screen.HOME.name)
     object Search : NavigationItem(Screen.SEARCH.name)
     object CreatePost : NavigationItem(Screen.CREATE_POST.name)

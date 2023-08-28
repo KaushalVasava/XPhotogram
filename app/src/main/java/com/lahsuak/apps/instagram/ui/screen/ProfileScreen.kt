@@ -22,10 +22,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,10 +60,22 @@ fun ProfileScreen(
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
-    val user = homeViewModel.getUserById(userId)
-    val admin = homeViewModel.getUserById(MY_USER_ID)
-    val posts = homeViewModel.getPosts(user?.postIds ?: emptyList())
-    val stories = homeViewModel.getStories(user?.storyIds ?: emptyList())
+    val userState by remember {
+        mutableStateOf(homeViewModel.getUserById(userId))
+    }
+    val admin by remember {
+        mutableStateOf(homeViewModel.getUserById(MY_USER_ID))
+    }
+    val posts by remember {
+        mutableStateOf(
+            homeViewModel.getPosts(userState?.postIds ?: emptyList())
+        )
+    }
+    val stories by remember {
+        mutableStateOf(
+            homeViewModel.getStories(userState?.storyIds ?: emptyList())
+        )
+    }
     val userType = if (userId == MY_USER_ID) {
         UserType.ADMIN
     } else if (admin!!.followingIds.any {
@@ -71,6 +85,7 @@ fun ProfileScreen(
     } else {
         UserType.FOLLOWER
     }
+    val user = userState
     if (user != null) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
