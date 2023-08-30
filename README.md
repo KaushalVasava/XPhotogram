@@ -30,9 +30,7 @@ It is an instagram clone using Jetpack compose. I have used Rest Api, Dependency
 
 # Video
 
-https://github.com/KaushalVasava/Instagram/assets/49050597/7b98a763-39fd-49e9-a893-6944c071069d
-
-
+https://github.com/KaushalVasava/Instagram/assets/49050597/23d08e73-77c8-42f5-a5ba-d5e7b0d4e871
 
 # Contribution
 
