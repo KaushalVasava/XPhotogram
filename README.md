@@ -1,5 +1,5 @@
 # Instagram
-It is an instagram clone using Jetpack compose. I have used Rest Api, Dependency Injection, MVVM Architecture, Animations etc.
+It is an instagram clone using Jetpack compose. I used dependency Injection, Retrofit2, Viewpager, Coil, Tab-layout, MVVM architecture, Flow, bottom-navigation, navigation graph, and animations.
 
 # Features: 
 - See Posts, Stories, Tweets
