@@ -32,6 +32,11 @@ It is an instagram clone using Jetpack compose. I used dependency Injection, Ret
 
 https://github.com/KaushalVasava/Instagram/assets/49050597/23d08e73-77c8-42f5-a5ba-d5e7b0d4e871
 
+# Support Me
+If you like my work you can support me via :
+
+[![buymecoffee1 (2)](https://github.com/KaushalVasava/Tasks/assets/49050597/327844b7-b9a4-4c5d-beb7-e9e177c82880)](https://www.buymeacoffee.com/kaushal.developer)
+
 # Contribution
 
 You can contribute this project. Just Solve issue or update code and raise PR. I'll do code review and merge your changes into main branch.
