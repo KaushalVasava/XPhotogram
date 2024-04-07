@@ -1,5 +1,5 @@
-# Instagram
-It is an instagram clone using Jetpack compose. I used dependency Injection, Retrofit2, Viewpager, Coil, Tab-layout, MVVM architecture, Flow, bottom-navigation, navigation graph, and animations.
+# XPhotogram
+It is a XPhotogram app contains functionalities of X and Instagram apps and developed using Jetpack compose. I used dependency Injection, Retrofit2, Viewpager, Coil, Tab-layout, MVVM architecture, Flow, bottom-navigation, navigation graph, and animations.
 
 # Features: 
 - See Posts, Stories, Tweets
@@ -45,7 +45,7 @@ See Commit message guidelines https://initialcommit.com/blog/git-commit-messages
 # Licence
 MIT License
 
-Copyright (c) 2023 Kaushal Vasava
+Copyright (c) 2024 Kaushal Vasava
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
